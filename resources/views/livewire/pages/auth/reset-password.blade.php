@@ -71,8 +71,8 @@ new #[Layout('layouts.guest')] class extends Component
 
 <div>
     <div class="text-center mb-8">
-        <h2 class="text-2xl font-bold text-gray-900">Reset Password</h2>
-        <p class="mt-1.5 text-sm text-gray-500">Buat password baru untuk akun Anda</p>
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Reset Password</h2>
+        <p class="mt-1.5 text-sm text-gray-500 dark:text-gray-400">Buat password baru untuk akun Anda</p>
     </div>
 
     <form wire:submit="resetPassword" class="space-y-5">

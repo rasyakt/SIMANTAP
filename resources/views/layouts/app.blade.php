@@ -1,5 +1,14 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" x-data="{ sidebarOpen: true }">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" 
+      x-data="{ 
+          sidebarOpen: true,
+          theme: localStorage.getItem('color-theme') || 'light',
+          toggleTheme() {
+              this.theme = this.theme === 'dark' ? 'light' : 'dark';
+              localStorage.setItem('color-theme', this.theme);
+          }
+      }"
+      :class="{ 'dark': theme === 'dark' }">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,10 +17,21 @@
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
+    <script>
+        function applyTheme() {
+            if (localStorage.getItem('color-theme') === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        }
+        applyTheme();
+        document.addEventListener('livewire:navigated', applyTheme);
+    </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 </head>
-<body class="font-sans antialiased bg-gray-50 dark:bg-gray-900">
+<body class="font-sans antialiased bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
     <div class="min-h-screen flex">
         <livewire:layout.navigation />
         <div class="flex-1 flex flex-col" :class="sidebarOpen ? 'lg:ml-64' : 'lg:ml-16'">

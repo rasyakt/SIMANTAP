@@ -1,18 +1,31 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}"
+      x-data="{ 
+          theme: localStorage.getItem('color-theme') || 'light'
+      }"
+      :class="{ 'dark': theme === 'dark' }">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
-
         <title>{{ \App\Models\Setting::getValue('nama_instansi', config('app.name', 'SIMANTAP')) }}</title>
         <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700,800&display=swap" rel="stylesheet" />
-
+        <script>
+            function applyTheme() {
+                if (localStorage.getItem('color-theme') === 'dark') {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+            }
+            applyTheme();
+            document.addEventListener('livewire:navigated', applyTheme);
+        </script>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased text-gray-900 bg-gray-50 selection:bg-blue-500 selection:text-white">
+    <body class="font-sans antialiased text-gray-900 bg-gray-50 dark:bg-gray-900 dark:text-gray-100 selection:bg-blue-500 selection:text-white transition-colors duration-200">
         <div class="min-h-screen flex flex-col sm:flex-row">
             
             <!-- Left Side: Branding & Info (Hidden on mobile, takes 50% on tablet, 45% on desktop) -->
@@ -66,7 +79,7 @@
             </div>
 
             <!-- Right Side: Auth Form -->
-            <div class="w-full sm:w-1/2 lg:w-[55%] bg-white sm:bg-gray-50 flex flex-col justify-center items-center p-6 sm:p-12 min-h-screen sm:min-h-0 relative">
+            <div class="w-full sm:w-1/2 lg:w-[55%] bg-white dark:bg-gray-900 sm:bg-gray-50 sm:dark:bg-gray-900 flex flex-col justify-center items-center p-6 sm:p-12 min-h-screen sm:min-h-0 relative">
                 
                 <!-- Mobile Logo (Visible only on small screens) -->
                 <div class="sm:hidden flex flex-col items-center mb-10 w-full pt-8">
@@ -74,12 +87,12 @@
                         <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-white shadow-lg overflow-hidden">
                             <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-full h-full object-cover">
                         </div>
-                        <span class="text-gray-900 font-extrabold text-2xl tracking-tight">{{ \App\Models\Setting::getValue('nama_instansi', 'SIMANTAP') }}</span>
+                        <span class="text-gray-900 dark:text-white font-extrabold text-2xl tracking-tight">{{ \App\Models\Setting::getValue('nama_instansi', 'SIMANTAP') }}</span>
                     </a>
                 </div>
 
                 <!-- Form Card -->
-                <div class="w-full max-w-[420px] bg-white sm:rounded-2xl sm:shadow-[0_8px_30px_rgb(0,0,0,0.04)] sm:border border-gray-100 sm:px-10 sm:py-12 relative z-10">
+                <div class="w-full max-w-[420px] bg-white dark:bg-gray-800 sm:rounded-2xl sm:shadow-[0_8px_30px_rgb(0,0,0,0.04)] sm:border border-gray-100 dark:border-gray-700 sm:px-10 sm:py-12 relative z-10">
                     {{ $slot }}
                 </div>
                 

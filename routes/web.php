@@ -58,9 +58,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('barang')->name('barang.')->group(function () {
         Route::get('/', BarangList::class)->name('index');
         Route::get('create', BarangForm::class)->name('create');
-        Route::get('{barang}', BarangShow::class)->name('show');
+        Route::get('{item}', BarangShow::class)->name('show');
         Route::get('{item}/edit', BarangForm::class)->name('edit');
-        Route::get('{id}/tandai-rusak', TandaiRusak::class)->name('tandai-rusak');
+        Route::get('{item}/tandai-rusak', TandaiRusak::class)->name('tandai-rusak');
         Route::get('/import/template', [ImportController::class, 'downloadTemplate'])->name('import.template');
         Route::post('/import', [ImportController::class, 'import'])->name('import');
     });

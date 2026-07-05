@@ -38,8 +38,8 @@ new #[Layout('layouts.guest')] class extends Component
 
 <div>
     <div class="text-center mb-8">
-        <h2 class="text-2xl font-bold text-gray-900">Lupa Password</h2>
-        <p class="mt-1.5 text-sm text-gray-500">Masukkan email Anda dan kami akan mengirimkan tautan reset password</p>
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Lupa Password</h2>
+        <p class="mt-1.5 text-sm text-gray-500 dark:text-gray-400">Masukkan email Anda dan kami akan mengirimkan tautan reset password</p>
     </div>
 
     <x-auth-session-status class="mb-4" :status="session('status')" />
@@ -57,8 +57,8 @@ new #[Layout('layouts.guest')] class extends Component
             </x-primary-button>
         </div>
 
-        <p class="text-center text-sm text-gray-500">
-            <a href="{{ route('login') }}" wire:navigate class="font-medium text-blue-600 hover:text-blue-500 transition-colors">&larr; Kembali ke halaman masuk</a>
+        <p class="text-center text-sm text-gray-500 dark:text-gray-400">
+            <a href="{{ route('login') }}" wire:navigate class="font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 transition-colors">&larr; Kembali ke halaman masuk</a>
         </p>
     </form>
 </div>
