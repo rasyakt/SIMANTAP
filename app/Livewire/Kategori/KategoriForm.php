@@ -98,7 +98,7 @@ class KategoriForm extends Component
             session()->flash('success', 'Kategori berhasil ditambahkan.');
         }
 
-        $this->redirectRoute('kategori.list', navigate: true);
+        $this->redirectRoute('kategori.index', navigate: true);
     }
 
     #[Title('Edit Kategori')]
