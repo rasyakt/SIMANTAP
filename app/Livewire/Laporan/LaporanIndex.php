@@ -98,7 +98,9 @@ class LaporanIndex extends Component
             'filters' => $filters,
         ]));
 
-        return $pdf->download('laporan-' . $this->jenisLaporan . '.pdf');
+        return response()->streamDownload(function () use ($pdf) {
+            echo $pdf->output();
+        }, 'laporan-' . $this->jenisLaporan . '.pdf');
     }
 
     private function getFilters(): array
@@ -139,7 +141,31 @@ class LaporanIndex extends Component
             ->orderBy('nama')
             ->get();
 
-        return compact('lokasis');
+        $rows = [];
+        foreach ($lokasis as $lokasi) {
+            $barangs = $lokasi->items;
+            if ($barangs->isEmpty()) {
+                continue;
+            }
+            $rows[] = [
+                'type' => 'header',
+                'key' => 'lokasi-header-' . $lokasi->id,
+                'lokasi' => $lokasi,
+                'count' => $barangs->count()
+            ];
+            foreach ($barangs as $barang) {
+                $rows[] = [
+                    'type' => 'barang',
+                    'key' => 'barang-row-' . $barang->id,
+                    'barang' => $barang
+                ];
+            }
+        }
+
+        return [
+            'lokasis' => $lokasis,
+            'reportRows' => $rows
+        ];
     }
 
     private function getBarangRusak(): array
@@ -193,13 +219,14 @@ class LaporanIndex extends Component
     {
         $this->authorize('laporan.view');
 
+
         $data = $this->getReportData();
-        $kategoris = Category::where('is_active', true)->orderBy('nama')->get();
-        $lokasis = Location::where('is_active', true)->orderBy('nama')->get();
+        $kategoriOptions = Category::where('is_active', true)->orderBy('nama')->get();
+        $lokasiOptions = Location::where('is_active', true)->orderBy('nama')->get();
 
         return view('livewire.laporan.laporan-index', array_merge($data, [
-            'kategoris' => $kategoris,
-            'lokasis' => $lokasis,
+            'kategoriOptions' => $kategoriOptions,
+            'lokasiOptions' => $lokasiOptions,
         ]));
     }
 }

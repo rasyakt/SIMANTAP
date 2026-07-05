@@ -45,7 +45,7 @@
                         <select wire:model.live="filterLokasi"
                                 class="text-sm border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500">
                             <option value="">Semua Lokasi</option>
-                            @foreach ($lokasis as $loc)
+                            @foreach ($lokasiOptions as $loc)
                                 <option value="{{ $loc->id }}">{{ $loc->nama }}</option>
                             @endforeach
                         </select>
@@ -53,7 +53,7 @@
                         <select wire:model.live="filterKategori"
                                 class="text-sm border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500">
                             <option value="">Semua Kategori</option>
-                            @foreach ($kategoris as $kat)
+                            @foreach ($kategoriOptions as $kat)
                                 <option value="{{ $kat->id }}">{{ $kat->nama }}</option>
                             @endforeach
                         </select>
@@ -103,7 +103,7 @@
 
                 <div class="overflow-x-auto">
                     @if ($jenisLaporan === 'barang-lokasi')
-                        <table class="w-full text-sm">
+                        <table class="w-full text-sm" wire:key="table-barang-lokasi">
                             <thead>
                                 <tr class="bg-gray-50 dark:bg-gray-900/50">
                                     <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Lokasi</th>
@@ -115,25 +115,23 @@
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                                @forelse ($lokasis as $lokasi)
-                                    @php $barangs = $lokasi->items; @endphp
-                                    @if ($barangs->isEmpty())
-                                        @continue
-                                    @endif
-                                    <tr class="bg-gray-100 dark:bg-gray-700/30">
-                                        <td colspan="6" class="px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
-                                            <div class="flex items-center gap-2">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                                </svg>
-                                                {{ $lokasi->nama }}
-                                                <span class="text-xs text-gray-500 dark:text-gray-400">({{ $barangs->count() }} barang)</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    @foreach ($barangs as $barang)
-                                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                                @forelse ($reportRows as $row)
+                                    @if ($row['type'] === 'header')
+                                        <tr class="bg-gray-100 dark:bg-gray-700/30" wire:key="{{ $row['key'] }}">
+                                            <td colspan="6" class="px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+                                                <div class="flex items-center gap-2">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                                    </svg>
+                                                    {{ $row['lokasi']->nama }}
+                                                    <span class="text-xs text-gray-500 dark:text-gray-400">({{ $row['count'] }} barang)</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @else
+                                        @php $barang = $row['barang']; @endphp
+                                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors" wire:key="{{ $row['key'] }}">
                                             <td class="px-4 py-2.5 text-xs text-gray-500 dark:text-gray-400">{{ $barang->lokasi?->nama ?? '-' }}</td>
                                             <td class="px-4 py-2.5 font-mono font-medium text-gray-900 dark:text-gray-100">{{ $barang->kode_aset }}</td>
                                             <td class="px-4 py-2.5 text-gray-900 dark:text-gray-100">{{ $barang->nama }}</td>
@@ -166,9 +164,9 @@
                                                 </span>
                                             </td>
                                         </tr>
-                                    @endforeach
+                                    @endif
                                 @empty
-                                    <tr>
+                                    <tr wire:key="empty-barang-lokasi">
                                         <td colspan="6" class="px-4 py-12">
                                             <div class="flex flex-col items-center justify-center text-center">
                                                 <svg class="w-16 h-16 text-gray-300 dark:text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -184,7 +182,7 @@
                         </table>
 
                     @elseif ($jenisLaporan === 'barang-rusak')
-                        <table class="w-full text-sm">
+                        <table class="w-full text-sm" wire:key="table-barang-rusak">
                             <thead>
                                 <tr class="bg-gray-50 dark:bg-gray-900/50">
                                     <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Kode Aset</th>
@@ -197,7 +195,7 @@
                             </thead>
                             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                                 @forelse ($items as $barang)
-                                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors" wire:key="barang-rusak-row-{{ $barang->id }}">
                                         <td class="px-4 py-3 font-mono font-medium text-gray-900 dark:text-gray-100">{{ $barang->kode_aset }}</td>
                                         <td class="px-4 py-3 text-gray-900 dark:text-gray-100">{{ $barang->nama }}</td>
                                         <td class="hidden md:table-cell px-4 py-3 text-gray-600 dark:text-gray-400">{{ $barang->lokasi?->nama ?? '-' }}</td>
@@ -218,7 +216,7 @@
                                         </td>
                                     </tr>
                                 @empty
-                                    <tr>
+                                    <tr wire:key="empty-barang-rusak">
                                         <td colspan="6" class="px-4 py-12">
                                             <div class="flex flex-col items-center justify-center text-center">
                                                 <svg class="w-16 h-16 text-gray-300 dark:text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -234,7 +232,7 @@
                         </table>
 
                     @elseif ($jenisLaporan === 'stok-gudang')
-                        <table class="w-full text-sm">
+                        <table class="w-full text-sm" wire:key="table-stok-gudang">
                             <thead>
                                 <tr class="bg-gray-50 dark:bg-gray-900/50">
                                     <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Nama Stok</th>
@@ -249,7 +247,7 @@
                             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                                 @forelse ($stoks as $stock)
                                     @php $isLow = $stock->isLowStock(); @endphp
-                                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors {{ $isLow ? 'bg-red-50 dark:bg-red-900/10' : '' }}">
+                                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors {{ $isLow ? 'bg-red-50 dark:bg-red-900/10' : '' }}" wire:key="stok-row-{{ $stock->id }}">
                                         <td class="px-4 py-3">
                                             <div class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ $stock->nama }}</div>
                                             <div class="text-xs text-gray-500 dark:text-gray-400">{{ $stock->satuan }}</div>
@@ -278,7 +276,7 @@
                                         </td>
                                     </tr>
                                 @empty
-                                    <tr>
+                                    <tr wire:key="empty-stok-gudang">
                                         <td colspan="7" class="px-4 py-12">
                                             <div class="flex flex-col items-center justify-center text-center">
                                                 <svg class="w-16 h-16 text-gray-300 dark:text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -294,7 +292,7 @@
                         </table>
 
                     @elseif ($jenisLaporan === 'riwayat-perbaikan')
-                        <table class="w-full text-sm">
+                        <table class="w-full text-sm" wire:key="table-riwayat-perbaikan">
                             <thead>
                                 <tr class="bg-gray-50 dark:bg-gray-900/50">
                                     <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Tanggal</th>
@@ -307,7 +305,7 @@
                             </thead>
                             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                                 @forelse ($riwayats as $rh)
-                                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors" wire:key="riwayat-row-{{ $rh->id }}">
                                         <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-100">
                                             {{ $rh->tanggal_laporan?->format('d/m/Y') ?? '-' }}
                                         </td>
@@ -346,7 +344,7 @@
                                         </td>
                                     </tr>
                                 @empty
-                                    <tr>
+                                    <tr wire:key="empty-riwayat-perbaikan">
                                         <td colspan="6" class="px-4 py-12">
                                             <div class="flex flex-col items-center justify-center text-center">
                                                 <svg class="w-16 h-16 text-gray-300 dark:text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
