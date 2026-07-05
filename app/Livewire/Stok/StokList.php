@@ -12,6 +12,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
+use Illuminate\Support\Facades\Auth;
 
 #[Layout('layouts.app')]
 #[Title('Daftar Stok Gudang')]
@@ -101,7 +102,7 @@ class StokList extends Component
         $stock->delete();
 
         activity('stok')
-            ->causedBy(auth()->user())
+            ->causedBy(Auth::user())
             ->performedOn($stock)
             ->event('deleted')
             ->withProperties([

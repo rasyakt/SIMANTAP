@@ -76,7 +76,7 @@ class LaporanIndex extends Component
         $jenisLabel = $this->jenisLaporanOptions[$this->jenisLaporan] ?? $this->jenisLaporan;
 
         activity('laporan')
-            ->causedBy(auth()->user())
+            ->causedBy(\Illuminate\Support\Facades\Auth::user())
             ->event('exported')
             ->withProperties([
                 'jenis_laporan' => $this->jenisLaporan,
@@ -113,7 +113,7 @@ class LaporanIndex extends Component
         ]));
 
         activity('laporan')
-            ->causedBy(auth()->user())
+            ->causedBy(\Illuminate\Support\Facades\Auth::user())
             ->event('exported')
             ->withProperties([
                 'jenis_laporan' => $this->jenisLaporan,

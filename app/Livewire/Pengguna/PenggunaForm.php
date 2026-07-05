@@ -161,7 +161,7 @@ class PenggunaForm extends Component
             $newRoles = Role::whereIn('id', $this->selectedRoles)->pluck('name')->implode(', ');
 
             activity('pengguna')
-                ->causedBy(auth()->user())
+                ->causedBy(\Illuminate\Support\Facades\Auth::user())
                 ->performedOn($this->user)
                 ->event('updated')
                 ->withProperties([
@@ -184,7 +184,7 @@ class PenggunaForm extends Component
             $roles = Role::whereIn('id', $this->selectedRoles)->pluck('name')->implode(', ');
 
             activity('pengguna')
-                ->causedBy(auth()->user())
+                ->causedBy(\Illuminate\Support\Facades\Auth::user())
                 ->performedOn($newUser)
                 ->event('created')
                 ->withProperties([
@@ -206,7 +206,8 @@ class PenggunaForm extends Component
         $roles = Role::orderBy('name')->get();
         $locations = Location::where('is_active', true)->orderBy('nama')->get();
 
-        return view('livewire.pengguna.pengguna-form', compact('roles', 'locations'))
-            ->title($this->user?->exists ? 'Edit Pengguna' : 'Tambah Pengguna');
+        /** @var mixed $response */
+        $response = view('livewire.pengguna.pengguna-form', compact('roles', 'locations'));
+        return $response->title($this->user?->exists ? 'Edit Pengguna' : 'Tambah Pengguna');
     }
 }

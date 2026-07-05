@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Livewire\Backup;
+namespace App\Livewire\Developer;
 
 use App\Services\BackupService;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -10,11 +12,18 @@ use Livewire\WithPagination;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
 #[Layout('layouts.app')]
-#[Title('Backup & Restore Database')]
-class BackupList extends Component
+#[Title('Developer Tools')]
+class DeveloperIndex extends Component
 {
     use WithPagination;
 
+    // --- System Info Logic ---
+    public array $systemInfo = [];
+
+    // --- Log Logic ---
+    public array $recentLogs = [];
+
+    // --- Backup Logic ---
     public bool $creatingBackup = false;
     public ?string $createResult = null;
     public ?string $createError = null;
@@ -33,9 +42,68 @@ class BackupList extends Component
 
     public function mount(): void
     {
-        $this->authorize('backup.view');
+        $this->authorize('backup.view'); // Reusing existing permission for admin access
+        $this->loadSystemInfo();
+        $this->loadRecentLogs();
     }
 
+    public function loadSystemInfo(): void
+    {
+        $dbVersion = 'Unknown';
+        try {
+            $pdo = DB::connection()->getPdo();
+            $dbVersion = $pdo->getAttribute(\PDO::ATTR_SERVER_VERSION);
+        } catch (\Exception $e) {
+            // Ignore
+        }
+        
+        $dbDriver = DB::connection()->getDriverName();
+
+        $this->systemInfo = [
+            'PHP Version' => PHP_VERSION,
+            'Laravel Version' => app()->version(),
+            'Server OS' => php_uname('s') . ' ' . php_uname('r') . ' (' . php_uname('m') . ')',
+            'Web Server' => $_SERVER['SERVER_SOFTWARE'] ?? php_sapi_name(),
+            'Database' => ucfirst($dbDriver) . ' ' . $dbVersion,
+            'Timezone' => config('app.timezone'),
+            'Environment' => app()->environment(),
+        ];
+    }
+
+    public function loadRecentLogs(): void
+    {
+        $logPath = storage_path('logs/laravel.log');
+        if (!File::exists($logPath)) {
+            $this->recentLogs = [];
+            return;
+        }
+
+        try {
+            $file = new \SplFileObject($logPath, 'r');
+            $file->seek(PHP_INT_MAX);
+            $lastLine = $file->key();
+            $start = max(0, $lastLine - 2000); // Read last 2000 lines
+            $file->seek($start);
+            
+            $errors = [];
+            while (!$file->eof()) {
+                $line = $file->current();
+                if (is_string($line) && str_contains($line, '.ERROR:')) {
+                    // Extract just the error message part for cleaner display
+                    $errors[] = trim($line);
+                }
+                $file->next();
+            }
+            
+            // Get last 10 and reverse so newest is first
+            $this->recentLogs = array_reverse(array_slice($errors, -10));
+        } catch (\Exception $e) {
+            $this->recentLogs = ['Gagal membaca log: ' . $e->getMessage()];
+        }
+    }
+
+    // --- Backup Methods (Copied from BackupList) ---
+    
     public function createBackup(): void
     {
         $this->authorize('backup.create');
@@ -51,7 +119,7 @@ class BackupList extends Component
             $this->createResult = "Backup berhasil: {$result['filename']} ({$result['size_formatted']})";
 
             activity('backup')
-                ->causedBy(auth()->user())
+                ->causedBy(\Illuminate\Support\Facades\Auth::user())
                 ->event('created')
                 ->withProperties([
                     'filename' => $result['filename'],
@@ -65,7 +133,7 @@ class BackupList extends Component
             $this->createError = 'Gagal membuat backup: ' . $e->getMessage();
 
             activity('backup')
-                ->causedBy(auth()->user())
+                ->causedBy(\Illuminate\Support\Facades\Auth::user())
                 ->event('created')
                 ->withProperties([
                     'error' => $e->getMessage(),
@@ -91,7 +159,7 @@ class BackupList extends Component
         }
 
         activity('backup')
-            ->causedBy(auth()->user())
+            ->causedBy(\Illuminate\Support\Facades\Auth::user())
             ->event('exported')
             ->withProperties([
                 'filename' => $filename,
@@ -100,7 +168,7 @@ class BackupList extends Component
             ])
             ->log("Mengunduh file backup {$filename}.");
 
-        $this->redirectRoute('backup.download', ['filename' => $filename]);
+        $this->redirectRoute('developer.download', ['filename' => $filename]);
     }
 
     public function confirmDelete(string $filename): void
@@ -135,7 +203,7 @@ class BackupList extends Component
 
             if ($deleted) {
                 activity('backup')
-                    ->causedBy(auth()->user())
+                    ->causedBy(\Illuminate\Support\Facades\Auth::user())
                     ->event('deleted')
                     ->withProperties([
                         'filename' => $this->deleteFilename,
@@ -187,7 +255,7 @@ class BackupList extends Component
             $result = $service->restoreBackup($this->restoreFilename);
 
             activity('backup')
-                ->causedBy(auth()->user())
+                ->causedBy(\Illuminate\Support\Facades\Auth::user())
                 ->event('restored')
                 ->withProperties([
                     'filename' => $this->restoreFilename,
@@ -224,7 +292,7 @@ class BackupList extends Component
             'database' => $dbConfig['database'],
         ];
 
-        return view('livewire.backup.backup-list', compact('backups', 'stats'));
+        return view('livewire.developer.developer-index', compact('backups', 'stats'));
     }
 
     protected function formatBytes(int $bytes): string

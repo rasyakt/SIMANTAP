@@ -12,7 +12,7 @@ use App\Livewire\Laporan\LaporanIndex;
 use App\Livewire\Lokasi\LokasiForm;
 use App\Livewire\Lokasi\LokasiList;
 use App\Livewire\Lokasi\LokasiShow;
-use App\Livewire\Backup\BackupList;
+
 use App\Livewire\LogActivity\LogActivityList;
 use App\Livewire\Pengaturan\PengaturanIndex;
 use App\Livewire\Pengguna\PenggunaForm;
@@ -103,8 +103,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/', LogActivityList::class)->name('index');
     });
 
-    Route::prefix('backup')->name('backup.')->group(function () {
-        Route::get('/', BackupList::class)->name('index');
+    Route::prefix('developer')->name('developer.')->group(function () {
+        Route::get('/', \App\Livewire\Developer\DeveloperIndex::class)->name('index');
         Route::get('download/{filename}', function (string $filename) {
             $service = app(\App\Services\BackupService::class);
             $filepath = $service->getBackupPath($filename);

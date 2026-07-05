@@ -59,7 +59,7 @@ class PengaturanIndex extends Component
         Setting::setValue($this->editKey, $this->editValue);
 
         activity('pengaturan')
-            ->causedBy(auth()->user())
+            ->causedBy(\Illuminate\Support\Facades\Auth::user())
             ->event('updated')
             ->withProperties([
                 'key' => $this->editKey,

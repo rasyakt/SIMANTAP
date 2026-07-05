@@ -1,13 +1,13 @@
 <div>
-    <div class="py-6">
+    <div class="py-6" x-data="{ activeTab: 'system' }">
         <div class="max-w-7xl mx-auto">
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
                 <div>
-                    <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Backup & Restore Database</h1>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Kelola backup database {{ $stats['database'] }}</p>
+                    <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Developer Tools</h1>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Konfigurasi sistem, pantau log, dan kelola backup database.</p>
                 </div>
-                @can('backup.create')
-                    <div class="flex gap-2">
+                <div x-show="activeTab === 'backup'" style="display: none;">
+                    @can('backup.create')
                         <x-primary-button wire:click="createBackup" wire:loading.attr="disabled" class="inline-flex items-center gap-2">
                             <svg wire:loading.remove wire:target="createBackup" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
@@ -18,11 +18,84 @@
                             <span wire:loading.remove wire:target="createBackup">Buat Backup Baru</span>
                             <span wire:loading wire:target="createBackup">Memproses...</span>
                         </x-primary-button>
-                    </div>
-                @endcan
+                    @endcan
+                </div>
             </div>
 
-            @if ($createResult)
+            <!-- Tabs -->
+            <div class="border-b border-gray-200 dark:border-gray-700 mb-6">
+                <nav class="-mb-px flex space-x-6" aria-label="Tabs">
+                    <button @click="activeTab = 'system'"
+                            :class="activeTab === 'system' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'"
+                            class="whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium transition-colors">
+                        Sistem & Log
+                    </button>
+                    <button @click="activeTab = 'backup'"
+                            :class="activeTab === 'backup' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'"
+                            class="whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium transition-colors">
+                        Backup Database
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Tab: Sistem & Log -->
+            <div x-show="activeTab === 'system'">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                    <!-- System Info -->
+                    <div class="lg:col-span-1">
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden h-full">
+                            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
+                                <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                                    <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                    Informasi Sistem
+                                </h2>
+                            </div>
+                            <div class="divide-y divide-gray-200 dark:divide-gray-700 p-2">
+                                @foreach($systemInfo as $key => $val)
+                                <div class="px-4 py-3">
+                                    <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ $key }}</p>
+                                    <p class="mt-1 text-sm text-gray-900 dark:text-gray-100 font-medium">{{ $val }}</p>
+                                </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Logs -->
+                    <div class="lg:col-span-2">
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden h-full flex flex-col">
+                            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 flex justify-between items-center">
+                                <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                                    <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                                    Log Error (10 Terbaru)
+                                </h2>
+                                <button wire:click="loadRecentLogs" wire:loading.attr="disabled" class="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 flex items-center gap-1 transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                                    Segarkan
+                                </button>
+                            </div>
+                            <div class="flex-1 p-4 bg-gray-900 text-gray-300 font-mono text-xs overflow-x-auto overflow-y-auto" style="min-height: 400px; max-height: 500px;">
+                                @if(empty($recentLogs))
+                                    <div class="text-green-400 flex items-center gap-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                        Tidak ada log error ditemukan. Sistem berjalan normal!
+                                    </div>
+                                @else
+                                    <div class="space-y-3">
+                                        @foreach($recentLogs as $log)
+                                            <div class="border-l-2 border-red-500 pl-3 py-1 bg-gray-800/50 break-words whitespace-pre-wrap">{{ $log }}</div>
+                                        @endforeach
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Backup Database -->
+            <div x-show="activeTab === 'backup'" style="display: none;">
+                @if ($createResult)
                 <div class="mb-4 p-4 text-sm text-green-700 bg-green-100 dark:text-green-400 dark:bg-green-900/50 rounded-lg flex items-center gap-2">
                     <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -169,7 +242,7 @@
                                             @can('backup.restore')
                                                 <button wire:click="confirmRestore('{{ $backup['filename'] }}')"
                                                         class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-yellow-600 dark:text-yellow-400 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 rounded-lg transition-colors"
-                                                        onclick="return confirm('Yakin ingin memulihkan database dari file {{ $backup['filename'] }}? Data saat ini akan ditimpa!') || event.stopImmediatePropagation()">
+                                                        onclick="return confirm('Yakin ingin memulihkan database dari file ini? Data saat ini akan ditimpa!') || event.stopImmediatePropagation()">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
                                                     </svg>
@@ -237,6 +310,7 @@
                         </ul>
                     </div>
                 </div>
+            </div>
             </div>
         </div>
     </div>
