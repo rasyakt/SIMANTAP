@@ -1,9 +1,9 @@
 <div align="center">
   <img src="public/images/logo.png" alt="SIMANTAP Logo" width="120"/>
   <h1 align="true">SIMANTAP</h1>
-  <p align="true"><strong>Sistem Informasi Manajemen Inventaris Barang</strong></p>
+  <p align="true"><strong>Sistem Informasi Manajemen Aset iNventaris, dan Tata Penyimpanan</strong></p>
   <p>
-    Aplikasi manajemen inventaris berbasis web untuk multi-lokasi — laboratorium, gudang, kantor, ruang kelas, dan lainnya. Dibangun dengan Laravel 13, Livewire 3, Tailwind CSS, Alpine.js, dan MySQL.
+    <strong>SIMANTAP</strong> adalah platform berbasis web terintegrasi untuk mengelola siklus hidup aset, inventaris barang, dan tata penyimpanan multi-lokasi (laboratorium, gudang, kantor, dan ruang kelas) secara efisien dan akurat.
   </p>
 </div>
 
