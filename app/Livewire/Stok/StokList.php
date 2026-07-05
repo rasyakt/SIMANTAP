@@ -97,7 +97,19 @@ class StokList extends Component
             return;
         }
 
+        $stockName = $stock->nama;
         $stock->delete();
+
+        activity('stok')
+            ->causedBy(auth()->user())
+            ->performedOn($stock)
+            ->event('deleted')
+            ->withProperties([
+                'data' => $stock->toArray(),
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+            ])
+            ->log("Menghapus stok {$stockName}.");
 
         session()->flash('success', 'Stok berhasil dihapus.');
         $this->cancelDelete();

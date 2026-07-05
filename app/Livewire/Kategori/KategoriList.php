@@ -59,11 +59,35 @@ class KategoriList extends Component
             return;
         }
 
+        $categoryName = $category->nama;
+
         if ($category->trashed()) {
             $category->forceDelete();
+
+            activity('kategori')
+                ->causedBy(auth()->user())
+                ->event('deleted')
+                ->withProperties([
+                    'data' => $category->toArray(),
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ])
+                ->log("Menghapus permanen kategori {$categoryName}.");
+
             session()->flash('success', 'Kategori berhasil dihapus permanen.');
         } else {
             $category->delete();
+
+            activity('kategori')
+                ->causedBy(auth()->user())
+                ->performedOn($category)
+                ->event('deleted')
+                ->withProperties([
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ])
+                ->log("Menghapus kategori {$categoryName}.");
+
             session()->flash('success', 'Kategori berhasil dihapus.');
         }
     }
@@ -78,7 +102,19 @@ class KategoriList extends Component
         $category = Category::onlyTrashed()->find($id);
 
         if ($category) {
+            $categoryName = $category->nama;
             $category->restore();
+
+            activity('kategori')
+                ->causedBy(auth()->user())
+                ->performedOn($category)
+                ->event('updated')
+                ->withProperties([
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ])
+                ->log("Memulihkan kategori {$categoryName}.");
+
             session()->flash('success', 'Kategori berhasil dipulihkan.');
         }
     }

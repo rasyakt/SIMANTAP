@@ -91,10 +91,36 @@ class KategoriForm extends Component
         ];
 
         if ($this->kategori && $this->kategori->exists) {
+            $oldData = $this->kategori->toArray();
             $this->kategori->update($data);
+
+            activity('kategori')
+                ->causedBy(auth()->user())
+                ->performedOn($this->kategori)
+                ->event('updated')
+                ->withProperties([
+                    'old' => $oldData,
+                    'new' => $data,
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ])
+                ->log("Mengubah kategori {$this->kategori->nama}.");
+
             session()->flash('success', 'Kategori berhasil diperbarui.');
         } else {
-            Category::create($data);
+            $kategori = Category::create($data);
+
+            activity('kategori')
+                ->causedBy(auth()->user())
+                ->performedOn($kategori)
+                ->event('created')
+                ->withProperties([
+                    'data' => $data,
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ])
+                ->log("Menambahkan kategori baru {$kategori->nama}.");
+
             session()->flash('success', 'Kategori berhasil ditambahkan.');
         }
 

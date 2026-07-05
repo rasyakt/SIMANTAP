@@ -85,11 +85,24 @@ class ImportController extends Controller
         $import = new BarangImport(auth()->id());
         Excel::import($import, $request->file('file'));
 
+        $importedCount = $import->getImportedCount();
+
+        activity('barang')
+            ->causedBy(auth()->user())
+            ->event('imported')
+            ->withProperties([
+                'imported_count' => $importedCount,
+                'errors' => $import->getErrors(),
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+            ])
+            ->log("Mengimpor {$importedCount} barang dari file Excel.");
+
         return response()->json([
             'success' => true,
-            'message' => "Import selesai: {$import->getImportedCount()} baris berhasil diimpor.",
+            'message' => "Import selesai: {$importedCount} baris berhasil diimpor.",
             'errors' => $import->getErrors(),
-            'imported' => $import->getImportedCount(),
+            'imported' => $importedCount,
         ]);
     }
 }

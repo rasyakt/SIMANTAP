@@ -52,7 +52,19 @@ class TemplateList extends Component
         }
 
         $template = ItemTemplate::findOrFail($id);
+        $templateName = $template->nama;
         $template->delete();
+
+        activity('template')
+            ->causedBy(auth()->user())
+            ->performedOn($template)
+            ->event('deleted')
+            ->withProperties([
+                'data' => $template->toArray(),
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+            ])
+            ->log("Menghapus template barang {$templateName}.");
 
         $this->dispatch('template-deleted');
         $this->dispatch('alert', type: 'success', message: 'Template berhasil dihapus.');

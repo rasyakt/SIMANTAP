@@ -14,6 +14,16 @@ class PenggunaShow extends Component
     public function mount(User $user): void
     {
         $this->user = $user->load(['roles', 'locations']);
+
+        activity('pengguna')
+            ->causedBy(auth()->user())
+            ->performedOn($this->user)
+            ->event('viewed')
+            ->withProperties([
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+            ])
+            ->log("Melihat detail pengguna {$this->user->name} ({$this->user->email}).");
     }
 
     public function render()

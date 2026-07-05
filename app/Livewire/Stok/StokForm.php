@@ -85,25 +85,55 @@ class StokForm extends Component
 
         $this->validate();
 
-        Stock::updateOrCreate(
+        $data = [
+            'nama' => $this->nama,
+            'kategori_id' => $this->kategori_id,
+            'item_template_id' => $this->item_template_id ?: null,
+            'lokasi_id' => $this->lokasi_id,
+            'jumlah_stok' => $this->jumlah_stok,
+            'ambang_batas_minimum' => $this->ambang_batas_minimum,
+            'satuan' => $this->satuan,
+            'harga_satuan' => $this->harga_satuan ?: null,
+            'vendor' => $this->vendor,
+            'catatan' => $this->catatan,
+        ];
+
+        $isUpdate = $this->stockId !== null;
+        $oldData = $isUpdate ? Stock::find($this->stockId)?->toArray() : null;
+
+        $stock = Stock::updateOrCreate(
             ['id' => $this->stockId],
-            [
-                'nama' => $this->nama,
-                'kategori_id' => $this->kategori_id,
-                'item_template_id' => $this->item_template_id ?: null,
-                'lokasi_id' => $this->lokasi_id,
-                'jumlah_stok' => $this->jumlah_stok,
-                'ambang_batas_minimum' => $this->ambang_batas_minimum,
-                'satuan' => $this->satuan,
-                'harga_satuan' => $this->harga_satuan ?: null,
-                'vendor' => $this->vendor,
-                'catatan' => $this->catatan,
-            ]
+            $data
         );
 
-        session()->flash('success', $this->stockId
-            ? 'Stok berhasil diperbarui.'
-            : 'Stok berhasil ditambahkan.');
+        if ($isUpdate) {
+            activity('stok')
+                ->causedBy(auth()->user())
+                ->performedOn($stock)
+                ->event('updated')
+                ->withProperties([
+                    'old' => $oldData,
+                    'new' => $data,
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ])
+                ->log("Mengubah stok {$stock->nama}.");
+
+            session()->flash('success', 'Stok berhasil diperbarui.');
+        } else {
+            activity('stok')
+                ->causedBy(auth()->user())
+                ->performedOn($stock)
+                ->event('created')
+                ->withProperties([
+                    'data' => $data,
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ])
+                ->log("Menambahkan stok baru {$stock->nama}.");
+
+            session()->flash('success', 'Stok berhasil ditambahkan.');
+        }
 
         return $this->redirect(route('stok.index'), navigate: true);
     }

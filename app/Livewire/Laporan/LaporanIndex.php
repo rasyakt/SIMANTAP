@@ -73,6 +73,19 @@ class LaporanIndex extends Component
         $this->authorize('laporan.export');
 
         $filters = $this->getFilters();
+        $jenisLabel = $this->jenisLaporanOptions[$this->jenisLaporan] ?? $this->jenisLaporan;
+
+        activity('laporan')
+            ->causedBy(auth()->user())
+            ->event('exported')
+            ->withProperties([
+                'jenis_laporan' => $this->jenisLaporan,
+                'format' => 'Excel',
+                'filters' => $filters,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+            ])
+            ->log("Mengekspor laporan {$jenisLabel} ke Excel.");
 
         if ($this->jenisLaporan === 'stok-gudang') {
             return Excel::download(new StokExport($filters), 'laporan-stok-gudang.xlsx');
@@ -87,6 +100,7 @@ class LaporanIndex extends Component
 
         $filters = $this->getFilters();
         $judul = $this->jenisLaporanOptions[$this->jenisLaporan] ?? 'Laporan';
+        $jenisLabel = $this->jenisLaporanOptions[$this->jenisLaporan] ?? $this->jenisLaporan;
         $data = $this->getReportData();
 
         $view = $this->jenisLaporan === 'stok-gudang' ? 'laporan.pdf-stok' : 'laporan.pdf-barang';
@@ -97,6 +111,18 @@ class LaporanIndex extends Component
             'dicetakPada' => now()->translatedFormat('d F Y H:i:s'),
             'filters' => $filters,
         ]));
+
+        activity('laporan')
+            ->causedBy(auth()->user())
+            ->event('exported')
+            ->withProperties([
+                'jenis_laporan' => $this->jenisLaporan,
+                'format' => 'PDF',
+                'filters' => $filters,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+            ])
+            ->log("Mengekspor laporan {$jenisLabel} ke PDF.");
 
         return response()->streamDownload(function () use ($pdf) {
             echo $pdf->output();

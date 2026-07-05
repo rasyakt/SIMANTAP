@@ -152,15 +152,49 @@ class PenggunaForm extends Component
         ];
 
         if ($this->user && $this->user->exists) {
+            $oldData = $this->user->toArray();
+            $oldRoles = $this->user->roles->pluck('name')->implode(', ');
             $this->user->update($data);
             $this->user->syncRoles($this->selectedRoles);
             $this->user->locations()->sync($this->selectedLocations);
+
+            $newRoles = Role::whereIn('id', $this->selectedRoles)->pluck('name')->implode(', ');
+
+            activity('pengguna')
+                ->causedBy(auth()->user())
+                ->performedOn($this->user)
+                ->event('updated')
+                ->withProperties([
+                    'old' => $oldData,
+                    'new' => $data,
+                    'old_roles' => $oldRoles,
+                    'new_roles' => $newRoles,
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ])
+                ->log("Mengubah data pengguna {$this->user->name} ({$this->user->email}).");
+
             session()->flash('success', 'Pengguna berhasil diperbarui.');
         } else {
             $data['password'] = $validated['password'];
             $newUser = User::create($data);
             $newUser->syncRoles($this->selectedRoles);
             $newUser->locations()->sync($this->selectedLocations);
+
+            $roles = Role::whereIn('id', $this->selectedRoles)->pluck('name')->implode(', ');
+
+            activity('pengguna')
+                ->causedBy(auth()->user())
+                ->performedOn($newUser)
+                ->event('created')
+                ->withProperties([
+                    'data' => $data,
+                    'roles' => $roles,
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ])
+                ->log("Menambahkan pengguna baru {$newUser->name} ({$newUser->email}).");
+
             session()->flash('success', 'Pengguna berhasil ditambahkan.');
         }
 

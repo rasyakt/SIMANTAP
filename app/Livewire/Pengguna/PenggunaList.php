@@ -55,7 +55,20 @@ class PenggunaList extends Component
         $this->authorize('pengguna.edit');
 
         $user = User::findOrFail($id);
+        $oldStatus = $user->is_active;
         $user->update(['is_active' => !$user->is_active]);
+
+        activity('pengguna')
+            ->causedBy(auth()->user())
+            ->performedOn($user)
+            ->event('toggled')
+            ->withProperties([
+                'old_is_active' => $oldStatus,
+                'new_is_active' => $user->is_active,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+            ])
+            ->log("Mengubah status pengguna {$user->name} menjadi " . ($user->is_active ? 'Aktif' : 'Nonaktif') . ".");
 
         session()->flash('success', 'Status pengguna berhasil diperbarui.');
     }
@@ -89,7 +102,20 @@ class PenggunaList extends Component
             return;
         }
 
+        $userData = $user->toArray();
+        $userName = $user->name;
         $user->delete();
+
+        activity('pengguna')
+            ->causedBy(auth()->user())
+            ->event('deleted')
+            ->withProperties([
+                'data' => $userData,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+            ])
+            ->log("Menghapus pengguna {$userName}.");
+
         session()->flash('success', 'Pengguna berhasil dihapus.');
         $this->cancelDelete();
     }

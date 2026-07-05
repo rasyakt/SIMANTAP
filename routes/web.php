@@ -12,6 +12,7 @@ use App\Livewire\Laporan\LaporanIndex;
 use App\Livewire\Lokasi\LokasiForm;
 use App\Livewire\Lokasi\LokasiList;
 use App\Livewire\Lokasi\LokasiShow;
+use App\Livewire\LogActivity\LogActivityList;
 use App\Livewire\Pengaturan\PengaturanIndex;
 use App\Livewire\Pengguna\PenggunaForm;
 use App\Livewire\Pengguna\PenggunaList;
@@ -95,6 +96,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('pengaturan')->name('pengaturan.')->group(function () {
         Route::get('/', PengaturanIndex::class)->name('index');
+    });
+
+    Route::prefix('log-aktivitas')->name('log-aktivitas.')->group(function () {
+        Route::get('/', LogActivityList::class)->name('index');
     });
 });
 

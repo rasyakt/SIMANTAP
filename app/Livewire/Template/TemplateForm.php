@@ -119,10 +119,36 @@ class TemplateForm extends Component
         }
 
         if ($this->template) {
+            $oldData = $this->template->toArray();
             $this->template->update($data);
+
+            activity('template')
+                ->causedBy(auth()->user())
+                ->performedOn($this->template)
+                ->event('updated')
+                ->withProperties([
+                    'old' => $oldData,
+                    'new' => $data,
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ])
+                ->log("Mengubah template barang {$this->template->nama}.");
+
             $message = 'Template berhasil diperbarui.';
         } else {
-            ItemTemplate::create($data);
+            $template = ItemTemplate::create($data);
+
+            activity('template')
+                ->causedBy(auth()->user())
+                ->performedOn($template)
+                ->event('created')
+                ->withProperties([
+                    'data' => $data,
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ])
+                ->log("Menambahkan template barang baru {$template->nama}.");
+
             $message = 'Template berhasil ditambahkan.';
         }
 

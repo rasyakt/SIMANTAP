@@ -24,6 +24,7 @@ class RolePermissionSeeder extends Seeder
             'laporan.view', 'laporan.export',
             'pengaturan.view', 'pengaturan.edit',
             'pengguna.list', 'pengguna.create', 'pengguna.edit', 'pengguna.delete',
+            'log-aktivitas.view',
             'dashboard.view',
         ];
 

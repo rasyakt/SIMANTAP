@@ -55,7 +55,20 @@ class PengaturanIndex extends Component
             'editValue' => 'required|string|max:500',
         ]);
 
+        $oldValue = Setting::getValue($this->editKey, '');
         Setting::setValue($this->editKey, $this->editValue);
+
+        activity('pengaturan')
+            ->causedBy(auth()->user())
+            ->event('updated')
+            ->withProperties([
+                'key' => $this->editKey,
+                'old_value' => $oldValue,
+                'new_value' => $this->editValue,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+            ])
+            ->log("Mengubah pengaturan {$this->editKey}.");
 
         session()->flash('success', 'Pengaturan "' . $this->editKey . '" berhasil diperbarui.');
 

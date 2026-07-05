@@ -85,7 +85,19 @@ class PerbaikanList extends Component
         $this->authorize('perbaikan.delete');
 
         $repair = RepairHistory::findOrFail($this->deleteId);
+        $repairId = $repair->id;
         $repair->delete();
+
+        activity('perbaikan')
+            ->causedBy(auth()->user())
+            ->performedOn($repair)
+            ->event('deleted')
+            ->withProperties([
+                'data' => $repair->toArray(),
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+            ])
+            ->log("Menghapus riwayat perbaikan #{$repairId}.");
 
         session()->flash('success', 'Riwayat perbaikan berhasil dihapus.');
         $this->cancelDelete();
@@ -102,11 +114,35 @@ class PerbaikanList extends Component
             return;
         }
 
+        $repairData = $repair->toArray();
+
         if ($repair->trashed()) {
             $repair->forceDelete();
+
+            activity('perbaikan')
+                ->causedBy(auth()->user())
+                ->event('deleted')
+                ->withProperties([
+                    'data' => $repairData,
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ])
+                ->log("Menghapus permanen riwayat perbaikan #{$id}.");
+
             session()->flash('success', 'Riwayat perbaikan berhasil dihapus permanen.');
         } else {
             $repair->delete();
+
+            activity('perbaikan')
+                ->causedBy(auth()->user())
+                ->performedOn($repair)
+                ->event('deleted')
+                ->withProperties([
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ])
+                ->log("Menghapus riwayat perbaikan #{$id}.");
+
             session()->flash('success', 'Riwayat perbaikan berhasil dihapus.');
         }
     }
@@ -118,6 +154,17 @@ class PerbaikanList extends Component
         $repair = RepairHistory::onlyTrashed()->find($id);
         if ($repair) {
             $repair->restore();
+
+            activity('perbaikan')
+                ->causedBy(auth()->user())
+                ->performedOn($repair)
+                ->event('updated')
+                ->withProperties([
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ])
+                ->log("Memulihkan riwayat perbaikan #{$id}.");
+
             session()->flash('success', 'Riwayat perbaikan berhasil dipulihkan.');
         }
     }

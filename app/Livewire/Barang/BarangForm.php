@@ -196,14 +196,40 @@ class BarangForm extends Component
         }
 
         if ($this->item && $this->item->exists) {
+            $oldData = $this->item->toArray();
             $data['updated_by'] = auth()->id();
             $this->item->update($data);
+
+            activity('barang')
+                ->causedBy(auth()->user())
+                ->performedOn($this->item)
+                ->event('updated')
+                ->withProperties([
+                    'old' => $oldData,
+                    'new' => $data,
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ])
+                ->log("Mengubah barang {$this->item->nama} ({$this->item->kode_aset}).");
+
             session()->flash('success', 'Barang berhasil diperbarui.');
         } else {
             $data['qr_code'] = $this->generateQrCode($validated['kode_aset']);
             $data['created_by'] = auth()->id();
             $data['updated_by'] = auth()->id();
-            Item::create($data);
+            $item = Item::create($data);
+
+            activity('barang')
+                ->causedBy(auth()->user())
+                ->performedOn($item)
+                ->event('created')
+                ->withProperties([
+                    'data' => $data,
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ])
+                ->log("Menambahkan barang baru {$item->nama} ({$item->kode_aset}).");
+
             session()->flash('success', 'Barang berhasil ditambahkan.');
         }
 

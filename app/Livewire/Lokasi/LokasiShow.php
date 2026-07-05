@@ -16,6 +16,16 @@ class LokasiShow extends Component
         $this->lokasi = $lokasi->load(['parent', 'penanggungJawab', 'children', 'items' => function ($q) {
             $q->with('kategori')->limit(20);
         }]);
+
+        activity('lokasi')
+            ->causedBy(auth()->user())
+            ->performedOn($this->lokasi)
+            ->event('viewed')
+            ->withProperties([
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+            ])
+            ->log("Melihat detail lokasi {$this->lokasi->nama}.");
     }
 
     public function render()

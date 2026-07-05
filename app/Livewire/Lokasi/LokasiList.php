@@ -73,7 +73,19 @@ class LokasiList extends Component
             return;
         }
 
+        $locationName = $location->nama;
         $location->delete();
+
+        activity('lokasi')
+            ->causedBy(auth()->user())
+            ->performedOn($location)
+            ->event('deleted')
+            ->withProperties([
+                'data' => $location->toArray(),
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+            ])
+            ->log("Menghapus lokasi {$locationName}.");
 
         session()->flash('success', 'Lokasi berhasil dihapus.');
         $this->cancelDelete();
@@ -85,7 +97,20 @@ class LokasiList extends Component
         $this->authorize('lokasi.edit');
 
         $location = Location::findOrFail($id);
+        $oldStatus = $location->is_active;
         $location->update(['is_active' => !$location->is_active]);
+
+        activity('lokasi')
+            ->causedBy(auth()->user())
+            ->performedOn($location)
+            ->event('toggled')
+            ->withProperties([
+                'old_is_active' => $oldStatus,
+                'new_is_active' => $location->is_active,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+            ])
+            ->log("Mengubah status lokasi {$location->nama} menjadi " . ($location->is_active ? 'Aktif' : 'Nonaktif') . ".");
 
         session()->flash('success', 'Status lokasi berhasil diperbarui.');
     }

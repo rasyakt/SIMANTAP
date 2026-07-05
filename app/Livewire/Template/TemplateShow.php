@@ -14,6 +14,16 @@ class TemplateShow extends Component
     public function mount(ItemTemplate $template): void
     {
         $this->template = $template->load(['kategori', 'items']);
+
+        activity('template')
+            ->causedBy(auth()->user())
+            ->performedOn($this->template)
+            ->event('viewed')
+            ->withProperties([
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+            ])
+            ->log("Melihat detail template {$this->template->nama}.");
     }
 
     public function render()

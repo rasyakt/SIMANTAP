@@ -131,7 +131,19 @@ class BarangList extends Component
         $this->authorize('barang.delete');
 
         $item = Item::findOrFail($this->deleteId);
+        $itemData = $item->toArray();
         $item->delete();
+
+        activity('barang')
+            ->causedBy(auth()->user())
+            ->performedOn($item)
+            ->event('deleted')
+            ->withProperties([
+                'data' => $itemData,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+            ])
+            ->log("Menghapus barang {$item->nama} ({$item->kode_aset}).");
 
         session()->flash('success', 'Barang berhasil dihapus.');
         $this->cancelDelete();
@@ -175,13 +187,37 @@ class BarangList extends Component
             $import = new BarangImport(auth()->id());
             Excel::import($import, $this->importFile);
 
+            $importedCount = $import->getImportedCount();
+
+            activity('barang')
+                ->causedBy(auth()->user())
+                ->event('imported')
+                ->withProperties([
+                    'imported_count' => $importedCount,
+                    'errors' => $import->getErrors(),
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ])
+                ->log("Mengimpor {$importedCount} barang dari file Excel.");
+
             $this->importResult = [
                 'success' => true,
-                'message' => "Import selesai: {$import->getImportedCount()} baris berhasil diimpor.",
+                'message' => "Import selesai: {$importedCount} baris berhasil diimpor.",
                 'errors' => $import->getErrors(),
-                'imported' => $import->getImportedCount(),
+                'imported' => $importedCount,
             ];
         } catch (\Exception $e) {
+            activity('barang')
+                ->causedBy(auth()->user())
+                ->event('imported')
+                ->withProperties([
+                    'success' => false,
+                    'error' => $e->getMessage(),
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ])
+                ->log("Gagal mengimpor barang: {$e->getMessage()}.");
+
             $this->importResult = [
                 'success' => false,
                 'message' => 'Gagal mengimpor file: ' . $e->getMessage(),

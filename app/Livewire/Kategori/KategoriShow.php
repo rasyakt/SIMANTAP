@@ -16,6 +16,16 @@ class KategoriShow extends Component
         $this->kategori = $kategori->load(['parent', 'children', 'items' => function ($q) {
             $q->with('lokasi')->limit(20);
         }]);
+
+        activity('kategori')
+            ->causedBy(auth()->user())
+            ->performedOn($this->kategori)
+            ->event('viewed')
+            ->withProperties([
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+            ])
+            ->log("Melihat detail kategori {$this->kategori->nama}.");
     }
 
     public function render()

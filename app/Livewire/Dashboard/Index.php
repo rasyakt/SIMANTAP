@@ -22,6 +22,15 @@ class Index extends Component
     public function mount(): void
     {
         $this->authorize('dashboard.view');
+
+        activity('dashboard')
+            ->causedBy(auth()->user())
+            ->event('viewed')
+            ->withProperties([
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+            ])
+            ->log("Melihat dashboard.");
     }
 
     public function render()

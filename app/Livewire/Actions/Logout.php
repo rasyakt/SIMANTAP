@@ -7,11 +7,22 @@ use Illuminate\Support\Facades\Session;
 
 class Logout
 {
-    /**
-     * Log the current user out of the application.
-     */
     public function __invoke(): void
     {
+        $user = Auth::user();
+
+        if ($user) {
+            activity('auth')
+                ->causedBy($user)
+                ->event('logout')
+                ->withProperties([
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                    'email' => $user->email,
+                ])
+                ->log("Pengguna {$user->name} ({$user->email}) telah keluar dari sistem.");
+        }
+
         Auth::guard('web')->logout();
 
         Session::invalidate();

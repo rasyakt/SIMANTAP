@@ -84,23 +84,53 @@ class LokasiForm extends Component
 
         $this->validate();
 
-        Location::updateOrCreate(
+        $data = [
+            'kode_lokasi' => $this->kode_lokasi,
+            'nama' => $this->nama,
+            'tipe_lokasi' => $this->tipe_lokasi,
+            'parent_id' => $this->parent_id ?: null,
+            'penanggung_jawab_id' => $this->penanggung_jawab_id ?: null,
+            'kapasitas' => $this->kapasitas ?: null,
+            'deskripsi' => $this->deskripsi,
+            'is_active' => $this->is_active,
+        ];
+
+        $isUpdate = $this->locationId !== null;
+        $oldData = $isUpdate ? Location::find($this->locationId)?->toArray() : null;
+
+        $location = Location::updateOrCreate(
             ['id' => $this->locationId],
-            [
-                'kode_lokasi' => $this->kode_lokasi,
-                'nama' => $this->nama,
-                'tipe_lokasi' => $this->tipe_lokasi,
-                'parent_id' => $this->parent_id ?: null,
-                'penanggung_jawab_id' => $this->penanggung_jawab_id ?: null,
-                'kapasitas' => $this->kapasitas ?: null,
-                'deskripsi' => $this->deskripsi,
-                'is_active' => $this->is_active,
-            ]
+            $data
         );
 
-        session()->flash('success', $this->locationId
-            ? 'Lokasi berhasil diperbarui.'
-            : 'Lokasi berhasil ditambahkan.');
+        if ($isUpdate) {
+            activity('lokasi')
+                ->causedBy(auth()->user())
+                ->performedOn($location)
+                ->event('updated')
+                ->withProperties([
+                    'old' => $oldData,
+                    'new' => $data,
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ])
+                ->log("Mengubah lokasi {$location->nama} ({$location->kode_lokasi}).");
+
+            session()->flash('success', 'Lokasi berhasil diperbarui.');
+        } else {
+            activity('lokasi')
+                ->causedBy(auth()->user())
+                ->performedOn($location)
+                ->event('created')
+                ->withProperties([
+                    'data' => $data,
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ])
+                ->log("Menambahkan lokasi baru {$location->nama} ({$location->kode_lokasi}).");
+
+            session()->flash('success', 'Lokasi berhasil ditambahkan.');
+        }
 
         return $this->redirect(route('lokasi.index'), navigate: true);
     }

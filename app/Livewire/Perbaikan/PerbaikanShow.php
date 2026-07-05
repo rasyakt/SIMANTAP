@@ -14,6 +14,18 @@ class PerbaikanShow extends Component
     public function mount(RepairHistory $repair): void
     {
         $this->repair = $repair->load(['item', 'item.lokasi', 'item.kategori', 'pelapor', 'penangan', 'stock', 'creator']);
+
+        $itemLabel = $this->repair->item ? "{$this->repair->item->nama} ({$this->repair->item->kode_aset})" : "#{$repair->id}";
+
+        activity('perbaikan')
+            ->causedBy(auth()->user())
+            ->performedOn($this->repair)
+            ->event('viewed')
+            ->withProperties([
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+            ])
+            ->log("Melihat detail perbaikan {$itemLabel}.");
     }
 
     public function render()

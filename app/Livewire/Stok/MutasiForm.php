@@ -161,9 +161,41 @@ class MutasiForm extends Component
             }
         });
 
-        session()->flash('success', $this->movementId
-            ? 'Mutasi stok berhasil diperbarui.'
-            : 'Mutasi stok berhasil dicatat.');
+        $stockName = $stock->nama;
+
+        if ($this->movementId) {
+            activity('mutasi')
+                ->causedBy(auth()->user())
+                ->performedOn($stock)
+                ->event('updated')
+                ->withProperties([
+                    'tipe' => $this->tipe,
+                    'jumlah' => $this->jumlah,
+                    'referensi' => $this->referensi,
+                    'keterangan' => $this->keterangan,
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ])
+                ->log("Mengubah mutasi stok {$stockName} ({$this->tipe}, {$this->jumlah} {$stock->satuan}).");
+
+            session()->flash('success', 'Mutasi stok berhasil diperbarui.');
+        } else {
+            activity('mutasi')
+                ->causedBy(auth()->user())
+                ->performedOn($stock)
+                ->event($this->tipe === 'masuk' ? 'created' : 'deleted')
+                ->withProperties([
+                    'tipe' => $this->tipe,
+                    'jumlah' => $this->jumlah,
+                    'referensi' => $this->referensi,
+                    'keterangan' => $this->keterangan,
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ])
+                ->log("Mencatat stok {$this->tipe} untuk {$stockName} sebanyak {$this->jumlah} {$stock->satuan}.");
+
+            session()->flash('success', 'Mutasi stok berhasil dicatat.');
+        }
 
         return $this->redirect(route('stok.index'), navigate: true);
     }

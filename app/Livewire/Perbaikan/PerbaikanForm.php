@@ -159,6 +159,9 @@ class PerbaikanForm extends Component
 
         $isCompleting = !empty($validated['tanggal_selesai']) && !empty($validated['status_akhir']);
 
+        $item = Item::find($validated['item_id']);
+        $itemLabel = $item ? "{$item->nama} ({$item->kode_aset})" : "#{$validated['item_id']}";
+
         if ($this->repairId) {
             $wasAlreadyComplete = !empty($this->repair->tanggal_selesai) && !empty($this->repair->status_akhir);
 
@@ -168,6 +171,17 @@ class PerbaikanForm extends Component
                 $this->updateItemStatus($validated['item_id']);
             }
 
+            activity('perbaikan')
+                ->causedBy(auth()->user())
+                ->performedOn($this->repair)
+                ->event('updated')
+                ->withProperties([
+                    'data' => $data,
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ])
+                ->log("Mengubah riwayat perbaikan {$itemLabel}.");
+
             session()->flash('success', 'Riwayat perbaikan berhasil diperbarui.');
         } else {
             $data['created_by'] = auth()->id();
@@ -176,6 +190,17 @@ class PerbaikanForm extends Component
             if ($isCompleting) {
                 $this->updateItemStatus($validated['item_id']);
             }
+
+            activity('perbaikan')
+                ->causedBy(auth()->user())
+                ->performedOn($repair)
+                ->event('created')
+                ->withProperties([
+                    'data' => $data,
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ])
+                ->log("Menambahkan riwayat perbaikan untuk {$itemLabel}.");
 
             session()->flash('success', 'Riwayat perbaikan berhasil ditambahkan.');
         }

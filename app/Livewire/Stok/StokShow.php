@@ -17,6 +17,16 @@ class StokShow extends Component
         $this->stock = $stock->load(['kategori', 'lokasi', 'itemTemplate', 'movements' => function ($q) {
             $q->with('creator', 'fromLocation', 'toLocation')->latest();
         }]);
+
+        activity('stok')
+            ->causedBy(auth()->user())
+            ->performedOn($this->stock)
+            ->event('viewed')
+            ->withProperties([
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+            ])
+            ->log("Melihat detail stok {$this->stock->nama}.");
     }
 
     public function render()

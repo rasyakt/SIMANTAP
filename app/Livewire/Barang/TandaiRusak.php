@@ -85,6 +85,22 @@ class TandaiRusak extends Component
             'created_by' => auth()->id(),
         ]);
 
+        activity('barang')
+            ->causedBy(auth()->user())
+            ->performedOn($this->item)
+            ->event('updated')
+            ->withProperties([
+                'tingkat_kerusakan' => $this->tingkat_kerusakan,
+                'kondisi_sebelumnya' => $kondisiSebelumnya,
+                'kondisi_baru' => $kondisiBaru,
+                'status_sebelumnya' => $this->item->getOriginal('status_penggunaan'),
+                'status_baru' => $statusPenggunaanBaru,
+                'deskripsi_kerusakan' => $validated['deskripsi_kerusakan'],
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+            ])
+            ->log("Menandai barang {$this->item->nama} ({$this->item->kode_aset}) sebagai {$kondisiBaru}.");
+
         session()->flash('success', 'Barang berhasil ditandai sebagai ' . strtolower($kondisiBaru) . '.');
 
         $this->redirectRoute('barang.show', $this->item, navigate: true);

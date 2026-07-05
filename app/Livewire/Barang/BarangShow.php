@@ -21,6 +21,16 @@ class BarangShow extends Component
             'statusHistories.creator',
             'repairHistories' => fn($q) => $q->latest(),
         ]);
+
+        activity('barang')
+            ->causedBy(auth()->user())
+            ->performedOn($this->item)
+            ->event('viewed')
+            ->withProperties([
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+            ])
+            ->log("Melihat detail barang {$this->item->nama} ({$this->item->kode_aset}).");
     }
 
     public function render()
