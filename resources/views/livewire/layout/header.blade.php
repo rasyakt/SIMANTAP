@@ -10,7 +10,7 @@
                 <h1 class="text-lg font-semibold text-gray-800 dark:text-gray-200" x-text="document.title.split(' | ')[0] || 'Dashboard'">Dashboard</h1>
             </div>
         </div>
-        <div class="flex items-center space-x-4">
+        <div class="flex items-center gap-2 sm:space-x-4">
             <button @click="toggleTheme()" type="button" class="relative p-2 text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
                 <!-- Sun Icon -->
                 <svg x-show="theme === 'dark'" style="display: none;" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">

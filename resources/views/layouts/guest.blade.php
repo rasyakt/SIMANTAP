@@ -79,10 +79,10 @@
             </div>
 
             <!-- Right Side: Auth Form -->
-            <div class="w-full sm:w-1/2 lg:w-[55%] bg-white dark:bg-gray-900 sm:bg-gray-50 sm:dark:bg-gray-900 flex flex-col justify-center items-center p-6 sm:p-12 min-h-screen sm:min-h-0 relative">
+            <div class="w-full sm:w-1/2 lg:w-[55%] bg-gray-50 dark:bg-gray-900 flex flex-col justify-center items-center p-6 sm:p-12 min-h-screen sm:min-h-0 relative">
                 
                 <!-- Mobile Logo (Visible only on small screens) -->
-                <div class="sm:hidden flex flex-col items-center mb-10 w-full pt-8">
+                <div class="sm:hidden flex flex-col items-center mb-8 w-full pt-4">
                     <a href="{{ url('/') }}" wire:navigate class="flex items-center gap-3">
                         <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-white shadow-lg overflow-hidden">
                             <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-full h-full object-cover">
@@ -92,13 +92,13 @@
                 </div>
 
                 <!-- Form Card -->
-                <div class="w-full max-w-[420px] bg-white dark:bg-gray-800 sm:rounded-2xl sm:shadow-[0_8px_30px_rgb(0,0,0,0.04)] sm:border border-gray-100 dark:border-gray-700 sm:px-10 sm:py-12 relative z-10">
+                <div class="w-full max-w-[420px] bg-white dark:bg-gray-800 rounded-2xl shadow-xl sm:shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 dark:border-gray-700 px-6 py-8 sm:px-10 sm:py-12 relative z-10">
                     {{ $slot }}
                 </div>
                 
                 <!-- Mobile Footer -->
-                <div class="sm:hidden mt-auto pt-12 pb-6">
-                     <p class="text-xs text-gray-400 font-medium text-center">
+                <div class="sm:hidden mt-auto pt-8 pb-4">
+                     <p class="text-xs text-gray-500 dark:text-gray-400 font-medium text-center">
                         &copy; {{ date('Y') }} {{ \App\Models\Setting::getValue('nama_instansi', 'SIMANTAP') }}.
                     </p>
                 </div>

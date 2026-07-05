@@ -168,7 +168,7 @@
                                         <tr class="bg-gray-50 dark:bg-gray-900/50">
                                             <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Kode Aset</th>
                                             <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Nama</th>
-                                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Kategori</th>
+                                            <th class="hidden md:table-cell px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Kategori</th>
                                             <th class="px-4 py-3 text-center text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Kondisi</th>
                                             <th class="px-4 py-3 text-right text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Aksi</th>
                                         </tr>
@@ -178,7 +178,7 @@
                                             <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                                                 <td class="px-4 py-3 font-mono text-gray-900 dark:text-gray-100">{{ $child->kode_aset }}</td>
                                                 <td class="px-4 py-3 text-gray-900 dark:text-gray-100">{{ $child->nama }}</td>
-                                                <td class="px-4 py-3 text-gray-500 dark:text-gray-400">{{ $child->kategori?->nama ?? '-' }}</td>
+                                                <td class="hidden md:table-cell px-4 py-3 text-gray-500 dark:text-gray-400">{{ $child->kategori?->nama ?? '-' }}</td>
                                                 <td class="px-4 py-3 text-center">
                                                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium
                                                         {{ $child->kondisi === 'Baik' ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300' : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/50 dark:text-yellow-300' }}">
@@ -212,7 +212,7 @@
                                             <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Kode Aset</th>
                                             <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Nama Komponen</th>
                                             <th class="px-4 py-3 text-center text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Kuantitas</th>
-                                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Catatan</th>
+                                            <th class="hidden md:table-cell px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Catatan</th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
@@ -221,7 +221,7 @@
                                                 <td class="px-4 py-3 font-mono text-gray-900 dark:text-gray-100">{{ $component->componentItem?->kode_aset ?? '-' }}</td>
                                                 <td class="px-4 py-3 text-gray-900 dark:text-gray-100">{{ $component->componentItem?->nama ?? '-' }}</td>
                                                 <td class="px-4 py-3 text-center text-gray-900 dark:text-gray-100">{{ $component->kuantitas }}</td>
-                                                <td class="px-4 py-3 text-gray-500 dark:text-gray-400">{{ $component->catatan ?: '-' }}</td>
+                                                <td class="hidden md:table-cell px-4 py-3 text-gray-500 dark:text-gray-400">{{ $component->catatan ?: '-' }}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>

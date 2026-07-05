@@ -40,8 +40,8 @@
                                 @endif
                             </div>
                         </th>
-                        <th scope="col" class="px-6 py-3">Kategori</th>
-                        <th scope="col" class="px-6 py-3 cursor-pointer select-none" wire:click="sortBy('merk')">
+                        <th scope="col" class="hidden md:table-cell px-6 py-3">Kategori</th>
+                        <th scope="col" class="hidden lg:table-cell px-6 py-3 cursor-pointer select-none" wire:click="sortBy('merk')">
                             <div class="flex items-center gap-1">
                                 Merk / Model
                                 @if ($sortField === 'merk')
@@ -51,8 +51,8 @@
                                 @endif
                             </div>
                         </th>
-                        <th scope="col" class="px-6 py-3">Satuan</th>
-                        <th scope="col" class="px-6 py-3 cursor-pointer select-none" wire:click="sortBy('estimasi_harga')">
+                        <th scope="col" class="hidden md:table-cell px-6 py-3">Satuan</th>
+                        <th scope="col" class="hidden lg:table-cell px-6 py-3 cursor-pointer select-none" wire:click="sortBy('estimasi_harga')">
                             <div class="flex items-center gap-1">
                                 Estimasi Harga
                                 @if ($sortField === 'estimasi_harga')
@@ -62,8 +62,8 @@
                                 @endif
                             </div>
                         </th>
-                        <th scope="col" class="px-6 py-3">Status</th>
-                        <th scope="col" class="px-6 py-3 text-center">Serial</th>
+                        <th scope="col" class="hidden md:table-cell px-6 py-3">Status</th>
+                        <th scope="col" class="hidden md:table-cell px-6 py-3 text-center">Serial</th>
                         @canany(['template.edit', 'template.delete'])
                             <th scope="col" class="px-6 py-3 text-right">Aksi</th>
                         @endcanany
@@ -93,21 +93,21 @@
                                     </div>
                                 </div>
                             </td>
-                            <td class="px-6 py-4">
+                            <td class="hidden md:table-cell px-6 py-4">
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300">
                                     {{ $template->kategori?->nama ?? '-' }}
                                 </span>
                             </td>
-                            <td class="px-6 py-4 text-gray-700 dark:text-gray-300">
+                            <td class="hidden lg:table-cell px-6 py-4 text-gray-700 dark:text-gray-300">
                                 {{ $template->merk ?? '-' }}
                             </td>
-                            <td class="px-6 py-4">
+                            <td class="hidden md:table-cell px-6 py-4">
                                 <span class="uppercase text-xs font-semibold text-gray-600 dark:text-gray-400">{{ $template->satuan }}</span>
                             </td>
-                            <td class="px-6 py-4 text-gray-700 dark:text-gray-300 font-medium">
+                            <td class="hidden lg:table-cell px-6 py-4 text-gray-700 dark:text-gray-300 font-medium">
                                 {{ $template->estimasi_harga ? 'Rp ' . number_format($template->estimasi_harga, 0, ',', '.') : '-' }}
                             </td>
-                            <td class="px-6 py-4">
+                            <td class="hidden md:table-cell px-6 py-4">
                                 @if ($template->is_active)
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300">
                                         Aktif
@@ -118,7 +118,7 @@
                                     </span>
                                 @endif
                             </td>
-                            <td class="px-6 py-4 text-center">
+                            <td class="hidden md:table-cell px-6 py-4 text-center">
                                 @if ($template->has_serial_number)
                                     <svg class="w-5 h-5 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>

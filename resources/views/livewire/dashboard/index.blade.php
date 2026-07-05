@@ -182,14 +182,14 @@
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5">
                         <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100 mb-4">Kondisi Barang</h3>
-                        <div class="relative h-64">
+                        <div class="relative h-48 sm:h-64">
                             <canvas x-ref="kondisiCanvas"></canvas>
                         </div>
                     </div>
 
                     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5">
                         <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100 mb-4">Barang per Lokasi</h3>
-                        <div class="relative h-64">
+                        <div class="relative h-48 sm:h-64">
                             <canvas x-ref="lokasiCanvas"></canvas>
                         </div>
                     </div>

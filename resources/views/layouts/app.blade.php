@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" 
       x-data="{ 
-          sidebarOpen: true,
+          sidebarOpen: window.innerWidth >= 1024,
           theme: localStorage.getItem('color-theme') || 'light',
           toggleTheme() {
               this.theme = this.theme === 'dark' ? 'light' : 'dark';
               localStorage.setItem('color-theme', this.theme);
           }
       }"
+      x-on:livewire:navigated.window="if (window.innerWidth < 1024) sidebarOpen = false"
       :class="{ 'dark': theme === 'dark' }">
 <head>
     <meta charset="utf-8">
@@ -34,7 +35,8 @@
 <body class="font-sans antialiased bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
     <div class="min-h-screen flex">
         <livewire:layout.navigation />
-        <div class="flex-1 flex flex-col" :class="sidebarOpen ? 'lg:ml-64' : 'lg:ml-16'">
+        <div x-show="sidebarOpen" @click="sidebarOpen = false" class="fixed inset-0 z-20 bg-black/30 lg:hidden" x-cloak></div>
+        <div class="flex-1 flex flex-col min-w-0" :class="sidebarOpen ? 'lg:ml-64' : 'lg:ml-16'">
             <livewire:layout.header />
             <main class="flex-1 p-4 sm:p-6 lg:p-8">
                 {{ $slot }}

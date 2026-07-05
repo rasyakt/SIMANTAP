@@ -58,7 +58,7 @@
                             @endforeach
                         </select>
 
-                        <div class="flex gap-2">
+                        <div class="flex flex-col sm:flex-row gap-2">
                             <input type="date" wire:model.live="filterTanggalDari"
                                    class="w-full text-sm border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500"
                                    placeholder="Dari Tanggal">

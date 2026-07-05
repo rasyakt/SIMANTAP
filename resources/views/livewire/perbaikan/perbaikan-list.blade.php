@@ -74,10 +74,10 @@
                                 @endif
                             </div>
                         </th>
-                        <th class="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-300">Kerusakan</th>
+                        <th class="hidden md:table-cell px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-300">Kerusakan</th>
                         <th class="px-4 py-3 text-center font-medium text-gray-600 dark:text-gray-300">Tingkat</th>
                         <th class="px-4 py-3 text-center font-medium text-gray-600 dark:text-gray-300">Status</th>
-                        <th class="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-300 cursor-pointer select-none" wire:click="sortBy('tanggal_selesai')">
+                        <th class="hidden lg:table-cell px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-300 cursor-pointer select-none" wire:click="sortBy('tanggal_selesai')">
                             <div class="flex items-center gap-1">
                                 Selesai
                                 @if ($sortField === 'tanggal_selesai')
@@ -118,7 +118,7 @@
                                     </span>
                                 @endif
                             </td>
-                            <td class="px-4 py-3 max-w-xs">
+                            <td class="hidden md:table-cell px-4 py-3 max-w-xs">
                                 <div class="text-gray-700 dark:text-gray-300 text-sm truncate" title="{{ $repair->deskripsi_kerusakan }}">
                                     {{ $repair->deskripsi_kerusakan }}
                                 </div>
@@ -146,7 +146,7 @@
                                     </span>
                                 @endif
                             </td>
-                            <td class="px-4 py-3 whitespace-nowrap text-gray-600 dark:text-gray-400 text-sm">
+                            <td class="hidden lg:table-cell px-4 py-3 whitespace-nowrap text-gray-600 dark:text-gray-400 text-sm">
                                 {{ $repair->tanggal_selesai?->isoFormat('DD MMM YYYY') ?? '-' }}
                             </td>
                             <td class="px-4 py-3 text-right">

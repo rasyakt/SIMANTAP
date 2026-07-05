@@ -92,8 +92,8 @@
                                             <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Tanggal</th>
                                             <th class="px-4 py-3 text-center text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Tipe</th>
                                             <th class="px-4 py-3 text-right text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Jumlah</th>
-                                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Referensi</th>
-                                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Keterangan</th>
+                                            <th class="hidden md:table-cell px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Referensi</th>
+                                            <th class="hidden md:table-cell px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Keterangan</th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
@@ -112,8 +112,8 @@
                                                 <td class="px-4 py-3 text-right font-medium text-gray-900 dark:text-gray-100">
                                                     {{ $movement->tipe === 'masuk' ? '+' : '-' }}{{ number_format($movement->jumlah, 0, ',', '.') }}
                                                 </td>
-                                                <td class="px-4 py-3 text-gray-600 dark:text-gray-400">{{ $movement->referensi ?: '-' }}</td>
-                                                <td class="px-4 py-3 text-gray-600 dark:text-gray-400 max-w-xs truncate">{{ $movement->keterangan ?: '-' }}</td>
+                                                <td class="hidden md:table-cell px-4 py-3 text-gray-600 dark:text-gray-400">{{ $movement->referensi ?: '-' }}</td>
+                                                <td class="hidden md:table-cell px-4 py-3 text-gray-600 dark:text-gray-400 max-w-xs truncate">{{ $movement->keterangan ?: '-' }}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>

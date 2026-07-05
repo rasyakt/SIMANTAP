@@ -54,7 +54,7 @@
                                 @endif
                             </div>
                         </th>
-                        <th class="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-300">Slug</th>
+                        <th class="hidden md:table-cell px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-300">Slug</th>
                         <th class="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-300 cursor-pointer select-none" wire:click="sortBy('parent_id')">
                             <div class="flex items-center gap-1">
                                 Induk
@@ -65,7 +65,7 @@
                                 @endif
                             </div>
                         </th>
-                        <th class="px-4 py-3 text-center font-medium text-gray-600 dark:text-gray-300">Ikon</th>
+                        <th class="hidden md:table-cell px-4 py-3 text-center font-medium text-gray-600 dark:text-gray-300">Ikon</th>
                         <th class="px-4 py-3 text-center font-medium text-gray-600 dark:text-gray-300 cursor-pointer select-none" wire:click="sortBy('is_active')">
                             <div class="flex items-center justify-center gap-1">
                                 Status
@@ -92,11 +92,11 @@
                                     {{ $category->nama }}
                                 </div>
                             </td>
-                            <td class="px-4 py-3 text-gray-500 dark:text-gray-400 text-xs font-mono">{{ $category->slug }}</td>
+                            <td class="hidden md:table-cell px-4 py-3 text-gray-500 dark:text-gray-400 text-xs font-mono">{{ $category->slug }}</td>
                             <td class="px-4 py-3 text-gray-500 dark:text-gray-400">
                                 {{ $category->parent?->nama ?? '-' }}
                             </td>
-                            <td class="px-4 py-3 text-center text-gray-500 dark:text-gray-400">
+                            <td class="hidden md:table-cell px-4 py-3 text-center text-gray-500 dark:text-gray-400">
                                 {{ $category->icon ?: '-' }}
                             </td>
                             <td class="px-4 py-3 text-center">
