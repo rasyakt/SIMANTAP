@@ -12,6 +12,7 @@ use App\Livewire\Laporan\LaporanIndex;
 use App\Livewire\Lokasi\LokasiForm;
 use App\Livewire\Lokasi\LokasiList;
 use App\Livewire\Lokasi\LokasiShow;
+use App\Livewire\Backup\BackupList;
 use App\Livewire\LogActivity\LogActivityList;
 use App\Livewire\Pengaturan\PengaturanIndex;
 use App\Livewire\Pengguna\PenggunaForm;
@@ -100,6 +101,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('log-aktivitas')->name('log-aktivitas.')->group(function () {
         Route::get('/', LogActivityList::class)->name('index');
+    });
+
+    Route::prefix('backup')->name('backup.')->group(function () {
+        Route::get('/', BackupList::class)->name('index');
+        Route::get('download/{filename}', function (string $filename) {
+            $service = app(\App\Services\BackupService::class);
+            $filepath = $service->getBackupPath($filename);
+
+            if (!$filepath || !file_exists($filepath)) {
+                abort(404, 'File backup tidak ditemukan.');
+            }
+
+            return response()->download($filepath, $filename);
+        })->middleware('can:backup.view')->name('download');
     });
 });
 
