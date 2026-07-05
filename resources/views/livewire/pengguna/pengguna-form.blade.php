@@ -84,18 +84,26 @@
 
                         <div class="space-y-2">
                             <x-input-label for="is_active" value="Status" />
-                            <label class="relative inline-flex items-center cursor-pointer mt-2">
-                                <input
-                                    id="is_active"
-                                    type="checkbox"
-                                    wire:model="is_active"
-                                    class="sr-only peer"
-                                >
-                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 dark:peer-focus:ring-indigo-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-indigo-600"></div>
-                                <span class="ms-3 text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    {{ $is_active ? 'Aktif' : 'Nonaktif' }}
-                                </span>
-                            </label>
+                            @if ($user && $user->exists && $user->hasRole('Super Admin'))
+                                <div class="flex items-center gap-2 mt-2">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300">
+                                        Aktif (Status Permanen untuk Super Admin)
+                                    </span>
+                                </div>
+                            @else
+                                <label class="relative inline-flex items-center cursor-pointer mt-2">
+                                    <input
+                                        id="is_active"
+                                        type="checkbox"
+                                        wire:model="is_active"
+                                        class="sr-only peer"
+                                    >
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 dark:peer-focus:ring-indigo-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-indigo-600"></div>
+                                    <span class="ms-3 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        {{ $is_active ? 'Aktif' : 'Nonaktif' }}
+                                    </span>
+                                </label>
+                            @endif
                             <x-input-error :messages="$errors->get('is_active')" />
                         </div>
 
@@ -103,14 +111,42 @@
                             <x-input-label value="Role *" />
                             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mt-2">
                                 @forelse ($roles as $role)
-                                    <label class="relative flex items-center p-3 border border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors {{ in_array((string) $role->id, $selectedRoles) ? 'border-indigo-500 dark:border-indigo-400 bg-indigo-50 dark:bg-indigo-900/20' : '' }}">
+                                    @php
+                                        $isSuperAdminRole = $role->name === 'Super Admin';
+                                        $isCurrentUserSuperAdmin = auth()->user()->hasRole('Super Admin');
+                                        $isTargetSuperAdmin = $user && $user->exists && $user->hasRole('Super Admin');
+                                        
+                                        // Cek apakah ada akun Super Admin lain di sistem
+                                        $hasAnotherSuperAdmin = \App\Models\User::role('Super Admin')
+                                            ->when($user && $user->exists, function ($query) use ($user) {
+                                                $query->where('id', '!=', $user->id);
+                                            })
+                                            ->exists();
+
+                                        // Jangan tampilkan opsi Super Admin jika:
+                                        // 1. Yang mengedit bukan Super Admin, ATAU
+                                        // 2. Target bukan Super Admin DAN sudah ada Super Admin lain di sistem (karena dibatasi maks 1)
+                                        if ($isSuperAdminRole && (!$isCurrentUserSuperAdmin || (!$isTargetSuperAdmin && $hasAnotherSuperAdmin))) {
+                                            continue;
+                                        }
+                                        
+                                        // Kunci input jika target adalah Super Admin
+                                        $isDisabled = $isSuperAdminRole && $isTargetSuperAdmin;
+                                    @endphp
+                                    <label class="relative flex items-center p-3 border border-gray-200 dark:border-gray-600 rounded-lg {{ $isDisabled ? 'opacity-60 cursor-not-allowed bg-gray-50 dark:bg-gray-800' : 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50' }} transition-colors {{ in_array((string) $role->id, $selectedRoles) ? 'border-indigo-500 dark:border-indigo-400 bg-indigo-50 dark:bg-indigo-900/20' : '' }}">
                                         <input
                                             type="checkbox"
                                             value="{{ $role->id }}"
                                             wire:model.blur="selectedRoles"
-                                            class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                            @if($isDisabled) disabled @endif
+                                            class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 {{ $isDisabled ? 'cursor-not-allowed' : '' }}"
                                         >
-                                        <span class="ms-2 text-sm font-medium text-gray-700 dark:text-gray-300">{{ $role->name }}</span>
+                                        <span class="ms-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                            {{ $role->name }}
+                                            @if($isDisabled)
+                                                <span class="text-xs text-gray-400 dark:text-gray-500 font-normal">(Wajib aktif)</span>
+                                            @endif
+                                        </span>
                                     </label>
                                 @empty
                                     <p class="text-sm text-gray-500 dark:text-gray-400 col-span-full">Belum ada role tersedia.</p>

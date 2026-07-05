@@ -33,6 +33,13 @@ class PenggunaForm extends Component
         $this->user = $user;
 
         if ($user && $user->exists) {
+            // Mencegah non-Super Admin mengedit akun Super Admin
+            /** @var \App\Models\User|null $currentUser */
+            $currentUser = \Illuminate\Support\Facades\Auth::user();
+            if ($user->hasRole('Super Admin') && (!$currentUser || !$currentUser->hasRole('Super Admin'))) {
+                abort(403, 'Anda tidak memiliki hak untuk mengedit akun Super Admin.');
+            }
+
             $this->name = $user->name;
             $this->email = $user->email;
             $this->phone = $user->phone ?? '';
@@ -71,6 +78,71 @@ class PenggunaForm extends Component
         }
 
         $validated = $this->validate();
+
+        // 1. Dapatkan role Super Admin
+        $superAdminRole = Role::where('name', 'Super Admin')->first();
+        /** @var \App\Models\User|null $currentUser */
+        $currentUser = \Illuminate\Support\Facades\Auth::user();
+        $isCurrentUserSuperAdmin = $currentUser && $currentUser->hasRole('Super Admin');
+
+        // 2. Batasan untuk non-Super Admin
+        if ($superAdminRole) {
+            $isAssigningSuperAdmin = in_array((string)$superAdminRole->id, $this->selectedRoles);
+            $isEditingSuperAdmin = $this->user && $this->user->exists && $this->user->hasRole('Super Admin');
+
+            if (($isAssigningSuperAdmin || $isEditingSuperAdmin) && !$isCurrentUserSuperAdmin) {
+                session()->flash('error', 'Hanya pengguna dengan role Super Admin yang dapat membuat atau mengelola akun Super Admin.');
+                return;
+            }
+        }
+
+        // 2.5. Batasan Maksimal 1 Super Admin di Sistem
+        if ($superAdminRole && in_array((string)$superAdminRole->id, $this->selectedRoles)) {
+            $anotherSuperAdmin = User::role('Super Admin')
+                ->when($this->user && $this->user->exists, function ($query) {
+                    $query->where('id', '!=', $this->user->id);
+                })
+                ->first();
+
+            if ($anotherSuperAdmin) {
+                session()->flash('error', 'Sistem hanya diperbolehkan memiliki maksimal satu akun dengan role Super Admin.');
+                return;
+            }
+        }
+
+        // 3. Batasan saat mengedit diri sendiri
+        $currentUserId = \Illuminate\Support\Facades\Auth::id();
+        if ($this->user && $this->user->exists && $this->user->id === $currentUserId) {
+            // Mencegah menonaktifkan diri sendiri
+            if (!$validated['is_active']) {
+                session()->flash('error', 'Anda tidak dapat menonaktifkan akun Anda sendiri.');
+                return;
+            }
+
+            // Mencegah menghapus role Super Admin dari diri sendiri
+            if ($superAdminRole && $this->user->hasRole('Super Admin') && !in_array((string)$superAdminRole->id, $this->selectedRoles)) {
+                session()->flash('error', 'Anda tidak dapat menghapus role Super Admin dari akun Anda sendiri untuk mencegah terkunci.');
+                return;
+            }
+        }
+
+        // 4. Mencegah terkunci (harus ada minimal satu Super Admin yang aktif di sistem)
+        if ($superAdminRole) {
+            $isTargetSuperAdmin = $this->user && $this->user->exists && $this->user->hasRole('Super Admin');
+            $willNoLongerBeSuperAdmin = !in_array((string)$superAdminRole->id, $this->selectedRoles);
+
+            if ($isTargetSuperAdmin && ($willNoLongerBeSuperAdmin || !$validated['is_active'])) {
+                $otherActiveSuperAdmins = User::role('Super Admin')
+                    ->where('is_active', true)
+                    ->where('id', '!=', $this->user->id)
+                    ->count();
+
+                if ($otherActiveSuperAdmins === 0) {
+                    session()->flash('error', 'Tidak dapat menonaktifkan atau mengubah role. Sistem harus memiliki minimal satu Super Admin yang aktif.');
+                    return;
+                }
+            }
+        }
 
         $data = [
             'name' => $validated['name'],

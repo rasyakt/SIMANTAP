@@ -112,7 +112,7 @@
                                         <span class="text-sm text-gray-700 dark:text-gray-300 font-medium">{{ $setting->value }}</span>
                                         @can('pengaturan.edit')
                                             <button
-                                                wire:click="startEdit('{{ $setting->key }}', '{{ $setting->value }}')"
+                                                wire:click="startEdit('{{ $setting->key }}')"
                                                 class="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
                                                 title="Edit"
                                             >

@@ -31,13 +31,13 @@ class PengaturanIndex extends Component
         $this->groups = $allSettings->pluck('group')->unique()->values()->toArray();
     }
 
-    public function startEdit(string $key, string $value): void
+    public function startEdit(string $key): void
     {
         $this->authorize('pengaturan.edit');
 
         $this->editing = true;
         $this->editKey = $key;
-        $this->editValue = $value;
+        $this->editValue = Setting::getValue($key, '');
     }
 
     public function cancelEdit(): void
