@@ -3,10 +3,8 @@
          :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0 lg:w-16'">
         <div class="flex items-center justify-between h-16 px-4 border-b border-gray-200 dark:border-gray-700">
             <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center space-x-2" :class="sidebarOpen ? '' : 'lg:justify-center lg:w-full'">
-                <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-                    </svg>
+                <div class="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center bg-white border border-gray-100 shadow-sm">
+                    <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-full h-full object-cover">
                 </div>
                 <span x-show="sidebarOpen" class="text-sm font-semibold text-gray-800 dark:text-gray-200 whitespace-nowrap">SIMANTAP</span>
             </a>

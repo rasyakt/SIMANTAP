@@ -18,58 +18,58 @@
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5">
-                    <div class="flex items-center gap-4">
-                        <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                            <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-                            </svg>
-                        </div>
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 hover:shadow-md transition-shadow duration-200">
+                    <div class="flex items-start justify-between">
                         <div>
                             <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Barang</p>
-                            <p class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ number_format($totalItems, 0, ',', '.') }}</p>
+                            <p class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-2">{{ number_format($totalItems, 0, ',', '.') }}</p>
+                        </div>
+                        <div class="p-2.5 bg-blue-50/50 dark:bg-blue-900/20 rounded-full ring-1 ring-blue-100 dark:ring-blue-800/30">
+                            <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                            </svg>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5">
-                    <div class="flex items-center gap-4">
-                        <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                            <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
-                            </svg>
-                        </div>
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 hover:shadow-md transition-shadow duration-200">
+                    <div class="flex items-start justify-between">
                         <div>
                             <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Stok</p>
-                            <p class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ number_format($totalStocks, 0, ',', '.') }}</p>
+                            <p class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-2">{{ number_format($totalStocks, 0, ',', '.') }}</p>
+                        </div>
+                        <div class="p-2.5 bg-green-50/50 dark:bg-green-900/20 rounded-full ring-1 ring-green-100 dark:ring-green-800/30">
+                            <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+                            </svg>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5">
-                    <div class="flex items-center gap-4">
-                        <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
-                            <svg class="w-6 h-6 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                            </svg>
-                        </div>
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 hover:shadow-md transition-shadow duration-200">
+                    <div class="flex items-start justify-between">
                         <div>
                             <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Perlu Perhatian</p>
-                            <p class="text-2xl font-bold text-amber-600 dark:text-amber-400">{{ number_format($itemsPerluPerhatian->count(), 0, ',', '.') }}</p>
+                            <p class="text-3xl font-bold text-amber-600 dark:text-amber-400 mt-2">{{ number_format($itemsPerluPerhatian->count(), 0, ',', '.') }}</p>
+                        </div>
+                        <div class="p-2.5 bg-amber-50/50 dark:bg-amber-900/20 rounded-full ring-1 ring-amber-100 dark:ring-amber-800/30">
+                            <svg class="w-5 h-5 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                            </svg>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5">
-                    <div class="flex items-center gap-4">
-                        <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-                            <svg class="w-6 h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"/>
-                            </svg>
-                        </div>
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 hover:shadow-md transition-shadow duration-200">
+                    <div class="flex items-start justify-between">
                         <div>
                             <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Stok Menipis</p>
-                            <p class="text-2xl font-bold text-red-600 dark:text-red-400">{{ number_format($lowStockItems->count(), 0, ',', '.') }}</p>
+                            <p class="text-3xl font-bold text-red-600 dark:text-red-400 mt-2">{{ number_format($lowStockItems->count(), 0, ',', '.') }}</p>
+                        </div>
+                        <div class="p-2.5 bg-red-50/50 dark:bg-red-900/20 rounded-full ring-1 ring-red-100 dark:ring-red-800/30">
+                            <svg class="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"/>
+                            </svg>
                         </div>
                     </div>
                 </div>
