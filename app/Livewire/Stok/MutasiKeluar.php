@@ -8,10 +8,10 @@ use Livewire\Attributes\Title;
 #[Layout('layouts.app')]
 class MutasiKeluar extends MutasiForm
 {
-    public function mount($id = null, $tipe = null)
+    public function mount($id = null, $tipe = null, $stock_id = null)
     {
         $this->tipe = 'keluar';
-        parent::mount($id, $tipe);
+        parent::mount($id, $tipe, $stock_id);
     }
 
     #[Title('Stok Keluar')]

@@ -128,7 +128,8 @@ class LaporanIndex extends Component
     {
         $lokasis = Location::where('is_active', true)
             ->with(['items' => function ($q) {
-                $q->when($this->filterKategori, fn($q) => $q->where('kategori_id', $this->filterKategori))
+                $q->with(['kategori', 'lokasi'])
+                  ->when($this->filterKategori, fn($q) => $q->where('kategori_id', $this->filterKategori))
                   ->when($this->filterKondisi, fn($q) => $q->where('kondisi', $this->filterKondisi))
                   ->when($this->filterStatus, fn($q) => $q->where('status_penggunaan', $this->filterStatus))
                   ->when($this->filterTanggalDari, fn($q) => $q->whereDate('tanggal_pengadaan', '>=', $this->filterTanggalDari))

@@ -71,7 +71,7 @@ class BarangImport implements ToCollection, WithHeadingRow, WithValidation
                         'kategori_id' => $kategoriId,
                         'lokasi_id' => $lokasiId,
                         'nomor_seri' => $row['nomor_seri'] ?? null,
-                        'tanggal_pengadaan' => !empty($row['tanggal_pengadaan']) ? \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['tanggal_pengadaan'])->format('Y-m-d') : null,
+                        'tanggal_pengadaan' => !empty($row['tanggal_pengadaan']) ? $this->parseDate($row['tanggal_pengadaan']) : null,
                         'vendor' => $row['vendor'] ?? null,
                         'sumber' => $row['sumber'] ?? null,
                         'harga' => $row['harga'] ?? null,
@@ -118,5 +118,40 @@ class BarangImport implements ToCollection, WithHeadingRow, WithValidation
     public function getErrors(): array
     {
         return $this->errors;
+    }
+
+    private function parseDate($value): ?string
+    {
+        if ($value instanceof \DateTime) {
+            return $value->format('Y-m-d');
+        }
+
+        $stringValue = (string) trim($value);
+
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $stringValue)) {
+            $date = \DateTime::createFromFormat('Y-m-d', $stringValue);
+            return $date ? $date->format('Y-m-d') : null;
+        }
+
+        if (preg_match('/^\d{2}\/\d{2}\/\d{4}$/', $stringValue)) {
+            $date = \DateTime::createFromFormat('d/m/Y', $stringValue);
+            return $date ? $date->format('Y-m-d') : null;
+        }
+
+        if (preg_match('/^\d{2}-\d{2}-\d{4}$/', $stringValue)) {
+            $date = \DateTime::createFromFormat('d-m-Y', $stringValue);
+            return $date ? $date->format('Y-m-d') : null;
+        }
+
+        if (is_numeric($stringValue) && $stringValue > 0) {
+            try {
+                return \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject((float) $stringValue)->format('Y-m-d');
+            } catch (\Exception $e) {
+                return null;
+            }
+        }
+
+        $date = strtotime($stringValue);
+        return $date ? date('Y-m-d', $date) : null;
     }
 }

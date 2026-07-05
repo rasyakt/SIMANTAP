@@ -29,13 +29,16 @@ class MutasiForm extends Component
 
     public $selectedStock = null;
 
-    public function mount($id = null, $tipe = null)
+    public function mount($id = null, $tipe = null, $stock_id = null)
     {
         if ($tipe && in_array($tipe, ['masuk', 'keluar'])) {
             $this->tipe = $tipe;
         }
 
-        if ($id) {
+        if ($stock_id) {
+            $this->stock_id = (string) $stock_id;
+            $this->updatedStockId($this->stock_id);
+        } elseif ($id) {
             $movement = StockMovement::findOrFail($id);
 
             $this->movementId = $movement->id;

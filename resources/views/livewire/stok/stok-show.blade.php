@@ -13,13 +13,13 @@
                 </div>
                 <div class="flex items-center gap-2">
                     @can('stok.edit')
-                        <a wire:navigate href="{{ route('stok.edit', $stock) }}"
+                        <a wire:navigate href="/stok/{{ $this->stock->id }}/edit"
                            class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors">
                             Edit Stok
                         </a>
                     @endcan
                     @can('stok.masuk')
-                        <a wire:navigate href="{{ route('stok.mutasi', ['id' => $stock->id, 'tipe' => 'masuk']) }}"
+                        <a wire:navigate href="{{ route('stok.mutasi', ['stock_id' => $this->stock->id, 'tipe' => 'masuk']) }}"
                            class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors">
                             Stok Masuk
                         </a>

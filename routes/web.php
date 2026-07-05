@@ -70,9 +70,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('create', StokForm::class)->name('create');
         Route::get('masuk', \App\Livewire\Stok\MutasiMasuk::class)->name('masuk');
         Route::get('keluar', \App\Livewire\Stok\MutasiKeluar::class)->name('keluar');
-        Route::get('{stok}', StokShow::class)->name('show');
+        Route::get('mutasi', MutasiForm::class)->name('mutasi');
+        Route::get('{stock}', StokShow::class)->name('show');
         Route::get('{id}/edit', StokForm::class)->name('edit');
-        Route::get('{id}/mutasi', MutasiForm::class)->name('mutasi');
     });
 
     Route::prefix('perbaikan')->name('perbaikan.')->group(function () {

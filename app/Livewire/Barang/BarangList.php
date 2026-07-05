@@ -10,12 +10,16 @@ use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Livewire\WithFileUploads;
+use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\BarangImport;
 
 #[Layout('layouts.app')]
 #[Title('Daftar Barang')]
 class BarangList extends Component
 {
-    use WithPagination;
+    use WithPagination, WithFileUploads;
 
     #[Url(as: 'cari', history: true)]
     public string $search = '';
@@ -43,6 +47,11 @@ class BarangList extends Component
 
     public ?int $deleteId = null;
     public bool $deleteModal = false;
+
+    public bool $importModal = false;
+    public $importFile = null;
+    public bool $importProcessing = false;
+    public ?array $importResult = null;
 
     public array $kondisiOptions = [
         'Baik', 'Rusak Ringan', 'Rusak Berat', 'Dalam Perbaikan', 'Sudah Diperbaiki', 'Afkir-Dihapuskan'
@@ -126,6 +135,62 @@ class BarangList extends Component
 
         session()->flash('success', 'Barang berhasil dihapus.');
         $this->cancelDelete();
+    }
+
+    public function openImportModal(): void
+    {
+        $this->resetImportState();
+        $this->importModal = true;
+    }
+
+    public function closeImportModal(): void
+    {
+        $this->resetImportState();
+        $this->importModal = false;
+    }
+
+    public function resetImportState(): void
+    {
+        $this->importFile = null;
+        $this->importProcessing = false;
+        $this->importResult = null;
+    }
+
+    public function updatedImportFile(): void
+    {
+        $this->validate([
+            'importFile' => 'required|file|mimes:xlsx,xls,csv,txt|max:10240',
+        ]);
+    }
+
+    public function startImport(): void
+    {
+        if (!$this->importFile) {
+            return;
+        }
+
+        $this->importProcessing = true;
+
+        try {
+            $import = new BarangImport(auth()->id());
+            Excel::import($import, $this->importFile);
+
+            $this->importResult = [
+                'success' => true,
+                'message' => "Import selesai: {$import->getImportedCount()} baris berhasil diimpor.",
+                'errors' => $import->getErrors(),
+                'imported' => $import->getImportedCount(),
+            ];
+        } catch (\Exception $e) {
+            $this->importResult = [
+                'success' => false,
+                'message' => 'Gagal mengimpor file: ' . $e->getMessage(),
+                'errors' => [],
+                'imported' => 0,
+            ];
+        } finally {
+            $this->importProcessing = false;
+        }
     }
 
     public function render()
