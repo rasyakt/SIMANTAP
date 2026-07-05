@@ -32,8 +32,18 @@
                 </div>
             @endif
 
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-                <div class="p-4 border-b border-gray-200 dark:border-gray-700 space-y-3">
+            <div x-data="{ showFilters: false }" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <!-- Mobile Filter Toggle -->
+                <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between sm:hidden cursor-pointer" @click="showFilters = !showFilters">
+                    <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">Filter Laporan</span>
+                    <button type="button" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors">
+                        <svg class="w-5 h-5 transition-transform" :class="showFilters ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div :class="{'hidden': !showFilters, 'block': showFilters}" class="sm:block p-4 border-b border-gray-200 dark:border-gray-700 space-y-3">
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                         <select wire:model.live="jenisLaporan"
                                 class="text-sm border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500">
