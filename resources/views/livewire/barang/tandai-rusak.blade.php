@@ -60,26 +60,19 @@
                                 @endforeach
                             </select>
                             <div class="mt-2">
-                                @if ($tingkat_kerusakan === 'Rusak Ringan')
-                                    <div class="flex items-center gap-2 text-xs text-yellow-700 dark:text-yellow-300 bg-yellow-50 dark:bg-yellow-900/20 px-3 py-2 rounded-lg">
+                                @php
+                                    $info = match($tingkat_kerusakan) {
+                                        'Ringan', 'Sedang' => ['text-yellow-700 dark:text-yellow-300', 'bg-yellow-50 dark:bg-yellow-900/20', 'Status akan diubah menjadi Idle'],
+                                        'Berat', 'Kritis' => ['text-orange-700 dark:text-orange-300', 'bg-orange-50 dark:bg-orange-900/20', 'Status akan diubah menjadi Dalam Perbaikan'],
+                                        default => null,
+                                    };
+                                @endphp
+                                @if ($info)
+                                    <div class="flex items-center gap-2 text-xs {{ $info[0] }} {{ $info[1] }} px-3 py-2 rounded-lg">
                                         <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                         </svg>
-                                        Status penggunaan akan diubah menjadi <strong>Idle</strong>
-                                    </div>
-                                @elseif ($tingkat_kerusakan === 'Rusak Berat')
-                                    <div class="flex items-center gap-2 text-xs text-orange-700 dark:text-orange-300 bg-orange-50 dark:bg-orange-900/20 px-3 py-2 rounded-lg">
-                                        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                        </svg>
-                                        Status penggunaan akan diubah menjadi <strong>Dalam Perbaikan</strong>
-                                    </div>
-                                @elseif ($tingkat_kerusakan === 'Afkir-Dihapuskan')
-                                    <div class="flex items-center gap-2 text-xs text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-900/20 px-3 py-2 rounded-lg">
-                                        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"/>
-                                        </svg>
-                                        Status penggunaan akan diubah menjadi <strong>Menunggu Pembuangan</strong>
+                                        {{ $info[2] }}
                                     </div>
                                 @endif
                             </div>

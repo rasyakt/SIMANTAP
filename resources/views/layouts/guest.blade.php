@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ \App\Models\Setting::getValue('app.nama_instansi', config('app.name', 'SIMANTAP')) }}</title>
+        <title>{{ \App\Models\Setting::getValue('nama_instansi', config('app.name', 'SIMANTAP')) }}</title>
 
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
@@ -22,7 +22,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0l-3-3m3 3l3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
                             </svg>
                         </div>
-                        <span class="text-white font-semibold text-lg">{{ \App\Models\Setting::getValue('app.nama_instansi', 'SIMANTAP') }}</span>
+                        <span class="text-white font-semibold text-lg">{{ \App\Models\Setting::getValue('nama_instansi', 'SIMANTAP') }}</span>
                     </a>
                 </div>
 
@@ -31,7 +31,7 @@
                 </div>
 
                 <p class="mt-6 text-center text-xs text-blue-200/60">
-                    &copy; {{ date('Y') }} {{ \App\Models\Setting::getValue('app.nama_instansi', 'SIMANTAP') }}. All rights reserved.
+                    &copy; {{ date('Y') }} {{ \App\Models\Setting::getValue('nama_instansi', 'SIMANTAP') }}. All rights reserved.
                 </p>
             </div>
         </div>

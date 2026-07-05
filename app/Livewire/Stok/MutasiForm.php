@@ -139,7 +139,7 @@ class MutasiForm extends Component
                     'stock_id' => $this->stock_id,
                     'tipe' => $this->tipe,
                     'jumlah' => $this->jumlah,
-                    'harga_satuan' => $this->harga_satuan ?: null,
+                    'harga_satuan' => $this->harga_satuan !== '' ? (float) $this->harga_satuan : null,
                     'item_id' => $this->item_id ?: null,
                     'from_location_id' => $this->from_location_id ?: null,
                     'to_location_id' => $this->to_location_id ?: null,

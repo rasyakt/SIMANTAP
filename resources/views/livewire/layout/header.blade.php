@@ -7,7 +7,7 @@
                 </svg>
             </button>
             <div class="ml-4">
-                <h1 class="text-lg font-semibold text-gray-800 dark:text-gray-200">@yield('title', 'Dashboard')</h1>
+                <h1 class="text-lg font-semibold text-gray-800 dark:text-gray-200" x-text="document.title.split(' | ')[0] || 'Dashboard'">Dashboard</h1>
             </div>
         </div>
         <div class="flex items-center space-x-4">

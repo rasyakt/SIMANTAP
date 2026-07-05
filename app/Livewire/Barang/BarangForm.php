@@ -206,7 +206,7 @@ class BarangForm extends Component
             session()->flash('success', 'Barang berhasil ditambahkan.');
         }
 
-        $this->redirectRoute('barang.list', navigate: true);
+        $this->redirectRoute('barang.index', navigate: true);
     }
 
     #[Title('Edit Barang')]

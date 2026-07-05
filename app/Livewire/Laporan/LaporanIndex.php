@@ -89,10 +89,13 @@ class LaporanIndex extends Component
         $judul = $this->jenisLaporanOptions[$this->jenisLaporan] ?? 'Laporan';
         $data = $this->getReportData();
 
-        $pdf = Pdf::loadView('laporan.pdf-barang', array_merge($data, [
+        $view = $this->jenisLaporan === 'stok-gudang' ? 'laporan.pdf-stok' : 'laporan.pdf-barang';
+
+        $pdf = Pdf::loadView($view, array_merge($data, [
             'judul' => $judul,
             'jenisLaporan' => $this->jenisLaporan,
             'dicetakPada' => now()->translatedFormat('d F Y H:i:s'),
+            'filters' => $filters,
         ]));
 
         return $pdf->download('laporan-' . $this->jenisLaporan . '.pdf');

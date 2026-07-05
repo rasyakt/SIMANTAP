@@ -115,9 +115,9 @@
 </head>
 <body>
     <div class="kop">
-        <p class="nama-instansi">{{ \App\Models\Setting::getValue('app.nama_instansi', 'SIMANTAP') }}</p>
-        <p class="alamat">{{ \App\Models\Setting::getValue('app.alamat', '') }}</p>
-        <p class="alamat">{{ \App\Models\Setting::getValue('app.kota', '') }} Telp. {{ \App\Models\Setting::getValue('app.telepon', '') }}</p>
+        <p class="nama-instansi">{{ \App\Models\Setting::getValue('nama_instansi', 'SIMANTAP') }}</p>
+        <p class="alamat">{{ \App\Models\Setting::getValue('alamat', '') }}</p>
+        <p class="alamat">{{ \App\Models\Setting::getValue('kota', '') }} Telp. {{ \App\Models\Setting::getValue('nomor_telp', '') }}</p>
     </div>
 
     <div class="title">LAPORAN STOK GUDANG</div>

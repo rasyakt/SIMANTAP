@@ -18,6 +18,8 @@ use App\Livewire\Perbaikan\PerbaikanList;
 use App\Livewire\Stok\MutasiForm;
 use App\Livewire\Stok\StokForm;
 use App\Livewire\Stok\StokList;
+use App\Livewire\Stok\StokShow;
+use App\Livewire\Perbaikan\PerbaikanShow;
 use App\Livewire\Template\TemplateForm;
 use App\Livewire\Template\TemplateList;
 use App\Http\Controllers\ImportController;
@@ -59,15 +61,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('stok')->name('stok.')->group(function () {
         Route::get('/', StokList::class)->name('index');
         Route::get('create', StokForm::class)->name('create');
-        Route::get('{id}/edit', StokForm::class)->name('edit');
-        Route::get('{id}/mutasi', MutasiForm::class)->name('mutasi');
         Route::get('masuk', \App\Livewire\Stok\MutasiMasuk::class)->name('masuk');
         Route::get('keluar', \App\Livewire\Stok\MutasiKeluar::class)->name('keluar');
+        Route::get('{id}', StokShow::class)->name('show');
+        Route::get('{id}/edit', StokForm::class)->name('edit');
+        Route::get('{id}/mutasi', MutasiForm::class)->name('mutasi');
     });
 
     Route::prefix('perbaikan')->name('perbaikan.')->group(function () {
         Route::get('/', PerbaikanList::class)->name('index');
         Route::get('create', PerbaikanForm::class)->name('create');
+        Route::get('{id}', PerbaikanShow::class)->name('show');
         Route::get('{id}/edit', PerbaikanForm::class)->name('edit');
     });
 

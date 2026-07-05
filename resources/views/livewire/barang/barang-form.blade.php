@@ -270,7 +270,7 @@
                     </div>
 
                     <div class="flex items-center justify-end gap-3 px-6 py-4 bg-gray-50 dark:bg-gray-900/50 border-t border-gray-200 dark:border-gray-700">
-                        <a href="{{ route('barang.list') }}" wire:navigate
+                        <a href="{{ route('barang.index') }}" wire:navigate
                            class="px-6 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                             Batal
                         </a>

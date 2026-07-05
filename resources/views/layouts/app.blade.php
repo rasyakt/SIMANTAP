@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ \App\Models\Setting::getValue('app.nama_instansi', config('app.name', 'SIMANTAP')) }}</title>
+    <title>{{ $title ?? \App\Models\Setting::getValue('nama_instansi', config('app.name', 'SIMANTAP')) }}</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -19,7 +19,7 @@
                 {{ $slot }}
             </main>
             <footer class="border-t border-gray-200 dark:border-gray-700 px-6 py-3 text-center text-sm text-gray-500 dark:text-gray-400">
-                &copy; {{ date('Y') }} {{ \App\Models\Setting::getValue('app.nama_instansi', 'SIMANTAP') }}. All rights reserved.
+                &copy; {{ date('Y') }} {{ \App\Models\Setting::getValue('nama_instansi', 'SIMANTAP') }}. All rights reserved.
             </footer>
         </div>
     </div>
