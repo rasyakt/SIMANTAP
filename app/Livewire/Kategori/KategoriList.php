@@ -6,6 +6,7 @@ use App\Models\Category;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -15,15 +16,16 @@ class KategoriList extends Component
 {
     use WithPagination;
 
+    #[Url(as: 'cari', history: true)]
     public string $search = '';
 
+    #[Url(as: 'sort', history: true)]
     public string $sortField = 'nama';
 
+    #[Url(as: 'arah', history: true)]
     public string $sortDirection = 'asc';
 
     public ?int $kategoriId = null;
-
-    protected $queryString = ['search', 'sortField', 'sortDirection'];
 
     public function sortBy(string $field): void
     {

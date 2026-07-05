@@ -57,6 +57,36 @@ class BarangList extends Component
         $this->resetPage();
     }
 
+    public function updatingFilterKondisi(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatingFilterStatus(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatingFilterKategori(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatingFilterLokasi(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatingFilterTanggalDari(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatingFilterTanggalSampai(): void
+    {
+        $this->resetPage();
+    }
+
     public function sortBy(string $field): void
     {
         if ($this->sortField === $field) {

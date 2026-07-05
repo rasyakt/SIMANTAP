@@ -68,6 +68,7 @@ class StokList extends Component
             $this->sortField = $field;
             $this->sortDirection = 'asc';
         }
+        $this->resetPage();
     }
 
     public function confirmDelete($id)

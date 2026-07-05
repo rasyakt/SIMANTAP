@@ -34,6 +34,7 @@ class TemplateList extends Component
             $this->sortField = $field;
             $this->sortDirection = 'asc';
         }
+        $this->resetPage();
     }
 
     #[On('template-saved')]
